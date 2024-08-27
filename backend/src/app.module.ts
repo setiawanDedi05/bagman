@@ -4,12 +4,33 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './domain/entities/user.entity';
 import { Task } from './domain/entities/task.entity';
 import { AuthModule } from './presentation/auth/auth.module';
-
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.EMAIL_HOST,
+        port: +process.env.EMAIL_PORT,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD
+        },
+      },
+      defaults: {
+        from: '"No Reply" <noreply@example.com>',
+      },
+      template: {
+        dir: process.cwd() + '/src/templates/email',
+        adapter: new HandlebarsAdapter,
+        options: {
+          strict: true
+        }
+      }
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
