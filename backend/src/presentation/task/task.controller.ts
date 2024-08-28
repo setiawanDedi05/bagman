@@ -12,9 +12,10 @@ import { TaskService } from 'src/application/services/task.service';
 import { CreateTaskDto } from 'src/application/dto/task/create-task.dto';
 import { UpdateTaskDto } from 'src/application/dto/task/update-task.dto';
 import { JwtAuthCookieGuard } from 'src/common/middleware/jwt-cookie.middleware';
+import { AsignToDto } from 'src/application/dto/task/asign-task.dto';
 
-@UseGuards(JwtAuthCookieGuard)
 @Controller('tasks')
+@UseGuards(JwtAuthCookieGuard)
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
@@ -42,5 +43,9 @@ export class TaskController {
   remove(@Param('id') id: string) {
     return this.taskService.remove(id);
   }
-}
 
+  @Patch(':id/asign')
+  asignTo(@Param('id') id: string, @Body() asignToDto: AsignToDto){
+    return this.taskService.asign(id, asignToDto.id);
+  }
+}

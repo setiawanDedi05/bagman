@@ -11,6 +11,13 @@ export class TaskRepository implements ITaskRepository {
     private readonly taskRepository: Repository<Task>,
   ) {}
 
+  async asignTo(idTask: string, idUser: string): Promise<Task> {
+    const task = await this.findTaskById(idTask);
+    if(!task) return
+    task.asign = idUser;
+    return await this.taskRepository.save(task);
+  }
+
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     const task = this.taskRepository.create(createTaskDto);
     return await this.taskRepository.save(task);

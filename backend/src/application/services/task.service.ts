@@ -38,5 +38,15 @@ export class TaskService {
       throw error;
     }
   }
+
+  async asign(idTask: string, idUser: string){
+    try {
+      const task = await this.taskRepository.asignTo(idTask, idUser);
+      if(!task) throw new NotFoundException(`Task with id ${idTask} not found`)
+      return task;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 

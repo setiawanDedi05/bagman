@@ -8,5 +8,6 @@ export interface ITaskRepository {
   findTaskById(id: string): Promise<Task>;
   updateTask(id: string, updateTaskDto: UpdateTaskDto): Promise<Task>;
   deleteTask(id: string): Promise<Task>;
+  asignTo(idTask: string, idUser: string): Promise<Task>;
 }
 
