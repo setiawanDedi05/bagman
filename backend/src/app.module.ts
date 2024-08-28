@@ -7,12 +7,12 @@ import { AuthModule } from './presentation/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { TaskModule } from './presentation/task/task.module';
-import { JwtCookieMiddleware } from './common/middleware/jwt-cookie.middleware';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
-      isGlobal: true
+      isGlobal: true,
     }),
     MailerModule.forRoot({
       transport: {
@@ -20,7 +20,7 @@ import { JwtCookieMiddleware } from './common/middleware/jwt-cookie.middleware';
         port: +process.env.EMAIL_PORT,
         auth: {
           user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD
+          pass: process.env.EMAIL_PASSWORD,
         },
       },
       defaults: {
@@ -28,11 +28,11 @@ import { JwtCookieMiddleware } from './common/middleware/jwt-cookie.middleware';
       },
       template: {
         dir: process.cwd() + '/src/templates/email',
-        adapter: new HandlebarsAdapter,
+        adapter: new HandlebarsAdapter(),
         options: {
-          strict: true
-        }
-      }
+          strict: true,
+        },
+      },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -45,11 +45,7 @@ import { JwtCookieMiddleware } from './common/middleware/jwt-cookie.middleware';
       synchronize: true,
     }),
     AuthModule,
-    TaskModule
+    TaskModule,
   ],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer){
-    consumer.apply(JwtCookieMiddleware).forRoutes('')
-  }
-}
+export class AppModule {}
