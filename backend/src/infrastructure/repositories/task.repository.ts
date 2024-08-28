@@ -13,25 +13,25 @@ export class TaskRepository implements ITaskRepository {
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     const task = this.taskRepository.create(createTaskDto);
-    return this.taskRepository.save(task);
+    return await this.taskRepository.save(task);
   }
 
   async findAllTasks(): Promise<Task[]> {
-    return this.taskRepository.find();
+    return await this.taskRepository.find();
   }
 
   async findTaskById(id: string): Promise<Task> {
-    return this.taskRepository.findOne({ where: { id } });
+    return await this.taskRepository.findOne({ where: { id } });
   }
-  
+
   async updateTask(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
     await this.taskRepository.update(id, updateTaskDto);
-    return this.findTaskById(id);
+    return await this.findTaskById(id);
+  }
 
-  }
-  
-  async deleteTask(id: string): Promise<void> {
+  async deleteTask(id: string): Promise<Task> {
+    const task = this.findTaskById(id);
     await this.taskRepository.delete(id);
+    return task;
   }
-  
 }

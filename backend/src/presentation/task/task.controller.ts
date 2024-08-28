@@ -11,7 +11,6 @@ import {
 import { TaskService } from 'src/application/services/task.service';
 import { CreateTaskDto } from 'src/application/dto/task/create-task.dto';
 import { UpdateTaskDto } from 'src/application/dto/task/update-task.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { JwtAuthCookieGuard } from 'src/common/middleware/jwt-cookie.middleware';
 
 @UseGuards(JwtAuthCookieGuard)
