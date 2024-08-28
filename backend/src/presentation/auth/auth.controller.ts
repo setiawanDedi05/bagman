@@ -9,13 +9,17 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthService } from 'src/application/services/auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from '../../application/dto/auth/register.dto';
+import { LoginDto } from '../../application/dto/auth/login.dto';
 import { Response } from 'express';
+import { EmailService } from 'src/application/services/email.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly emailService: EmailService
+  ) {}
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -57,7 +61,7 @@ export class AuthController {
   @Get('verify-email')
   @HttpCode(HttpStatus.OK)
   async verifyEmail(@Query('token') token: string) {
-    await this.authService.verifyEmail(token);
+    await this.emailService.verifyEmail(token);
     return { message: 'Email verified successfully' };
   }
 }
