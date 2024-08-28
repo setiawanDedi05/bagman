@@ -1,8 +1,37 @@
-import { Task } from "src/domain/entities/task.entity";
-import { DataSource, Repository } from "typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateTaskDto } from 'src/application/dto/task/create-task.dto';
+import { UpdateTaskDto } from 'src/application/dto/task/update-task.dto';
+import { Task } from 'src/domain/entities/task.entity';
+import { ITaskRepository } from 'src/domain/interface/task.repository.interface';
+import { Repository } from 'typeorm';
 
-export class TaskRepository extends Repository<Task>{
-    constructor(private datasource: DataSource){
-        super(Task, datasource.createEntityManager());
-    }
+export class TaskRepository implements ITaskRepository {
+  constructor(
+    @InjectRepository(Task)
+    private readonly taskRepository: Repository<Task>,
+  ) {}
+
+  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+    const task = this.taskRepository.create(createTaskDto);
+    return this.taskRepository.save(task);
+  }
+
+  async findAllTasks(): Promise<Task[]> {
+    return this.taskRepository.find();
+  }
+
+  async findTaskById(id: string): Promise<Task> {
+    return this.taskRepository.findOne({ where: { id } });
+  }
+  
+  async updateTask(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
+    await this.taskRepository.update(id, updateTaskDto);
+    return this.findTaskById(id);
+
+  }
+  
+  async deleteTask(id: string): Promise<void> {
+    await this.taskRepository.delete(id);
+  }
+  
 }

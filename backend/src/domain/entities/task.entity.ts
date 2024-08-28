@@ -1,26 +1,38 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { User } from "./user.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from './user.entity';
 
 @Entity('tasks')
 export class Task {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column()
-    title: string;
+  @Column()
+  title: string;
 
-    @Column()
-    description: string;
+  @Column({ nullable: true })
+  description: string;
 
-    @Column({default: false})
-    completed: boolean;
+  @Column({ default: "created" })
+  status: string;
 
-    @ManyToOne(()=>User, user => user.id)
-    user: User;
+  @Column()
+  @ManyToOne(() => User, (user) => user.id)
+  createdBy: string;
 
-    @CreateDateColumn()
-    createdAt: string;
+  @Column({ nullable: true })
+  @ManyToOne(() => User, (user) => user.id)
+  asign: string;
 
-    @UpdateDateColumn()
-    updatedAt: string;
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: string;
+
+  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  updatedAt: string;
 }

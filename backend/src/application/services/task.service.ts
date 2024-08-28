@@ -1,29 +1,31 @@
 import { Injectable } from "@nestjs/common";
-import { Task } from "src/domain/entities/task.entity";
-import { User } from "src/domain/entities/user.entity";
-import { DataSource } from "typeorm";
+import { CreateTaskDto } from "../dto/task/create-task.dto";
+import { UpdateTaskDto } from "../dto/task/update-task.dto";
+import { TaskRepository } from "src/infrastructure/repositories/task.repository";
 
 @Injectable()
 export class TaskService {
-    constructor(private readonly dataSource: DataSource){}
+    constructor(
+        private readonly taskRepository: TaskRepository
+    ){}
     
-    private taskRepository = this.dataSource.getRepository(Task);
-
-    createTask(title: string, description: string, user: User): Promise<Task>{
-        const task = this.taskRepository.create({title, description, user});
-        return this.taskRepository.save(task);
+    async create(createTaskDto: CreateTaskDto){
+        return await this.taskRepository.createTask(createTaskDto);
     }
 
-    findTasksByUser(user: User):Promise<Task[]>{
-        return this.taskRepository.find({where: {user}});
+    async findAll(){
+        return await this.taskRepository.findAllTasks();
     }
 
-    async completeTask(taskId: string): Promise<Task>{
-        const task = await this.taskRepository.findOneBy({id:taskId});
-        if(task){
-            task.completed = true;
-            return this.taskRepository.save(task);
-        }
-        return null;
+    async findOne(id: string){
+        return await this.taskRepository.findTaskById(id);
+    }
+
+    async update(id: string, updateTaskDto: UpdateTaskDto){
+        return await this.update(id, updateTaskDto);
+    }
+
+    async remove(id: string){
+        return await this.taskRepository.deleteTask(id);
     }
 }

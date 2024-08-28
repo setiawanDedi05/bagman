@@ -5,7 +5,6 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthService } from 'src/application/services/auth.service';
 import { User } from 'src/domain/entities/user.entity';
 import { UserRepository } from 'src/infrastructure/repositories/user.repository';
-import { DataSource } from 'typeorm';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';

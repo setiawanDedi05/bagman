@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './domain/entities/user.entity';
@@ -6,6 +6,8 @@ import { Task } from './domain/entities/task.entity';
 import { AuthModule } from './presentation/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { TaskModule } from './presentation/task/task.module';
+import { JwtCookieMiddleware } from './common/middleware/jwt-cookie.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -43,6 +45,11 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       synchronize: true,
     }),
     AuthModule,
+    TaskModule
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer){
+    consumer.apply(JwtCookieMiddleware).forRoutes('')
+  }
+}
