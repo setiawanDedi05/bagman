@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './domain/entities/user.entity';
@@ -6,11 +6,14 @@ import { Task } from './domain/entities/task.entity';
 import { AuthModule } from './presentation/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { TaskModule } from './presentation/task/task.module';
+import {FirebaseAdminModule} from './firebase-admin.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
-      isGlobal: true
+      isGlobal: true,
     }),
     MailerModule.forRoot({
       transport: {
@@ -18,7 +21,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
         port: +process.env.EMAIL_PORT,
         auth: {
           user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD
+          pass: process.env.EMAIL_PASSWORD,
         },
       },
       defaults: {
@@ -26,12 +29,13 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       },
       template: {
         dir: process.cwd() + '/src/templates/email',
-        adapter: new HandlebarsAdapter,
+        adapter: new HandlebarsAdapter(),
         options: {
-          strict: true
-        }
-      }
+          strict: true,
+        },
+      },
     }),
+
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -42,7 +46,9 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       entities: [User, Task],
       synchronize: true,
     }),
+    FirebaseAdminModule,
     AuthModule,
+    TaskModule,
   ],
 })
 export class AppModule {}
