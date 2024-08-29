@@ -7,6 +7,7 @@ import { AuthModule } from './presentation/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { TaskModule } from './presentation/task/task.module';
+import {FirebaseAdminModule} from './firebase-admin.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { TaskModule } from './presentation/task/task.module';
         },
       },
     }),
+
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -44,6 +46,7 @@ import { TaskModule } from './presentation/task/task.module';
       entities: [User, Task],
       synchronize: true,
     }),
+    FirebaseAdminModule,
     AuthModule,
     TaskModule,
   ],
