@@ -3,7 +3,6 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -17,6 +16,9 @@ export class User {
 
   @Column({ unique: true })
   email: string;
+
+  @Column({ unique: true, nullable: true })
+  fcmToken: string;
 
   @Column({ default: false })
   isEmailVerified: boolean;
