@@ -22,15 +22,10 @@ import { EmailService } from 'src/application/services/email.service';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User])
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    EmailService,
-    UserRepository,
-    JwtStrategy,
-  ],
-  exports: [AuthService, JwtModule],
+  providers: [AuthService, EmailService, UserRepository, JwtStrategy],
+  exports: [AuthService, JwtModule, UserRepository],
 })
 export class AuthModule {}
