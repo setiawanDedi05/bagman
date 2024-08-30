@@ -1,42 +1,29 @@
 "use client";
 
-import { messaging } from "@/services/firebase";
-import { getToken, onMessage } from "firebase/messaging";
-import { useEffect } from "react"
+import { Button } from "@/components/ui/button";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ModeToggle } from "@/components/ui/toggle-theme";
 
 export default function Home() {
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      const swUrl = `/firebase-messaging-sw.js`;
-      navigator.serviceWorker.register(swUrl)
-        .then((registration) => {
-          console.log('Service Worker registered with scope:', registration.scope);
-
-          // Dapatkan token FCM
-          getToken(messaging, { vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY })
-            .then((currentToken) => {
-              if (currentToken) {
-                console.log('FCM Token:', currentToken);
-              } else {
-                console.log('No registration token available.');
-              }
-            })
-            .catch((err) => {
-              console.error('An error occurred while retrieving token.', err);
-            });
-
-          // Menangani pesan
-          onMessage(messaging, (payload) => {
-            console.log('Message received. ', payload);
-          });
-        })
-        .catch((error) => {
-          console.error('Service Worker registration failed:', error);
-        });
-    }
-  }, []);
 
   return (
-    <h1>Hello</h1>
+    <ResizablePanelGroup
+      direction="horizontal"
+      className="h-[100vh] max-w-md rounded-lg border min-w-[100%]"
+    >
+      <ResizablePanel defaultSize={25}>
+        <ModeToggle />
+        <div className="flex flex-col gap-2 h-full items-center justify-center p-6">
+          <Button variant="outline" className="w-full">Dashboard</Button>
+          <Button variant="outline" className="w-full">Task</Button>
+        </div>
+      </ResizablePanel>
+      <ResizableHandle />
+      <ResizablePanel defaultSize={75}>
+        <div className="flex h-full items-center justify-center p-6">
+          <span className="font-semibold">Content</span>
+        </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 }
