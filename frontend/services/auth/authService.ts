@@ -9,5 +9,11 @@ export const authService = {
     },
     register : async (user: RegisterDto) => {
         return api.post(endpoint.auth.register, user);
+    },
+    logout: async () => {
+        return api.post(endpoint.auth.logout);
+    },
+    verifyEmail: async(token: string) => {
+        return api.get(`${endpoint.auth.verifyEmail}?token=${token}`)
     }
 }
