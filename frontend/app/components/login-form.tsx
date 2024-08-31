@@ -1,3 +1,12 @@
+"use client";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,9 +20,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { authService } from "@/services/auth/loginService";
+import { authService } from "@/services/auth/authService";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuthStore } from "@/store/auth-store";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -24,7 +34,8 @@ const formSchema = z.object({
   }),
 });
 
-export default function LoginForm() {
+function LoginForm() {
+  const { setSeason } = useAuthStore();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -37,40 +48,43 @@ export default function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log({ values });
     try {
       const response = await authService.login(values);
       console.log({ response });
       if (response.status === 200) {
         toast({
-          title: 'Authentication Success',
-          description: 'You Are in the bag'
-        })
-        router.push("/");
+          title: "Authentication Success",
+          description: "You Are in the bag",
+        });
+        setSeason(response.data.user);
+        router.push("/dashboard");
       } else {
         toast({
-          variant: 'destructive',
-          title: 'Authentication Failed',
-          description: 'credentials not match'
-        })
+          variant: "destructive",
+          title: "Authentication Failed",
+          description: "credentials not match",
+        });
       }
     } catch (error: any) {
       toast({
-        variant: 'destructive',
-        title: 'Authentication Failed',
-        description: error.message
-      })
+        variant: "destructive",
+        title: "Authentication Failed",
+        description: error.message,
+      });
     }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8 flex flex-col justify-start"
+      >
         <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col justify-start items-start">
               <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input placeholder="dedi05" {...field} />
@@ -83,7 +97,7 @@ export default function LoginForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col justify-start items-start">
               <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input
@@ -100,5 +114,21 @@ export default function LoginForm() {
         <Button type="submit">Sign In</Button>
       </form>
     </Form>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Card>
+      <CardHeader className="text-start">
+        <CardTitle>Login</CardTitle>
+        <CardDescription className="text-start">
+          Don't Overrated, Overthinking and All kind of Over
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <LoginForm />
+      </CardContent>
+    </Card>
   );
 }

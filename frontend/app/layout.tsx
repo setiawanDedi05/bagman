@@ -19,17 +19,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Toaster />
-        <main className="flex min-h-screen flex-col items-center justify-between p-5">
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main className="flex min-h-screen flex-col items-center justify-center  ">
             {children}
-          </ThemeProvider>
-        </main>
+            <Toaster />
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );
