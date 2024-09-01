@@ -7,29 +7,16 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ModeToggle } from "@/components/ui/toggle-theme";
 import { UserNav } from "@/components/ui/user-nav";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/store/auth-store";
 import { LayoutDashboard, LucidePaperclip, ProjectorIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const defaultLayout = [20, 32, 48];
 
 export default function DashboardPage() {
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const { user } = useAuthStore();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!user) router.push("/");
-  }, []);
-
-  if(!user){
-    return <Skeleton className="w-[100px] h-[20px] rounded-full" />
-  }
 
   return (
     <section className="w-full">
