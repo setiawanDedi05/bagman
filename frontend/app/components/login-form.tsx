@@ -50,7 +50,6 @@ function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const response = await authService.login(values);
-      console.log({ response });
       if (response.status === 200) {
         toast({
           title: "Authentication Success",
