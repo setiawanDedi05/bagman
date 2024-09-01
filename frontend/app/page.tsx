@@ -1,9 +1,11 @@
+"use client"
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginPage from "./components/login-form";
 import RegisterPage from "./components/register-form";
 
 const HomePage = () => {
+
   return (
     <div className="text-center p-[50px] flex flex-col lg:flex-row lg:justify-around lg:align-middle">
       <div className="w-full lg:w-[50%] flex flex-col justify-center align-middle">
