@@ -56,7 +56,7 @@ function LoginForm() {
           description: "You Are in the bag",
         });
         setSeason(response.data.user);
-        router.push("/dashboard");
+        router.push("/protected/dashboard");
       } else {
         toast({
           variant: "destructive",
