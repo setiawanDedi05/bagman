@@ -7,8 +7,8 @@ interface AuthState {
   removeSeason: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  setSeason: (request) => set({ user: request }),
-  removeSeason: () => set({ user: null }),
+export const useAuthStore = create<AuthState>(() => ({
+  user: JSON.parse(sessionStorage.getItem("user") || "{}") as User,
+  setSeason: (request) => sessionStorage.setItem("user", JSON.stringify(request)),
+  removeSeason: () => sessionStorage.clear(),
 }));
