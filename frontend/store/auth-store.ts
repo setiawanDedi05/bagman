@@ -1,3 +1,5 @@
+"use client";
+
 import { User } from "@/services/auth/dto/user";
 import { create } from "zustand";
 
@@ -8,7 +10,11 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>(() => ({
-  user: JSON.parse(sessionStorage.getItem("user") || "{}") as User,
-  setSeason: (request) => sessionStorage.setItem("user", JSON.stringify(request)),
+  user:
+    typeof window !== "undefined"
+      ? (JSON.parse(sessionStorage.getItem("user") || "{}") as User)
+      : null,
+  setSeason: (request) =>
+    sessionStorage.setItem("user", JSON.stringify(request)),
   removeSeason: () => sessionStorage.clear(),
 }));
