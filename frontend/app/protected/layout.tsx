@@ -1,4 +1,5 @@
 "use client";
+
 import { Nav } from "@/components/nav";
 import { HeaderNav } from "@/components/ui/header";
 import {
@@ -77,26 +78,29 @@ export default function ProtectedPage({
                   label: "",
                   icon: LayoutDashboard,
                   variant: "ghost",
+                  to: "/protected/dashboard",
                 },
                 {
                   title: "Project",
                   label: "",
                   icon: ProjectorIcon,
                   variant: "ghost",
+                  to: "/protected/projects",
                 },
                 {
                   title: "Task",
                   label: "",
                   icon: LucidePaperclip,
                   variant: "ghost",
+                  to: "/protected/tasks",
                 },
               ]}
             />
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={75}>
-            <div className="flex h-full items-center justify-center p-6">
-              <span className="font-semibold">{children}</span>
+            <div className="flex h-full items-start justify-start p-6">
+              {children}
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
