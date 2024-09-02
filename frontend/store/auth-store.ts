@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@/services/auth/dto/user";
+import { User } from "@/services/dto/user";
 import { create } from "zustand";
 
 interface AuthState {
