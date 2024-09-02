@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Project } from './project.entity';
 
 @Entity('tasks')
 export class Task {
@@ -22,17 +23,24 @@ export class Task {
   @Column({ default: "backlog" })
   status: string;
 
-  @Column()
-  @ManyToOne(() => User, (user) => user.id)
-  createdBy: string;
+  @Column({default: "medium"})
+  priority: string;
 
-  @Column({ nullable: true })
-  @ManyToOne(() => User, (user) => user.id)
-  asign: string;
+  @Column({default: "feature"})
+  label: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: string;
-
+  
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: string;
+
+  @ManyToOne(() => Project, (project) => project.tasks)
+  project: Project;
+
+  @ManyToOne(() => User, (user) => user.createdTasks)
+  createdBy: User;
+
+  @ManyToOne(() => User, (user) => user.assignedTask)
+  assignees: User;
 }

@@ -8,6 +8,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { TaskModule } from './presentation/task/task.module';
 import {FirebaseAdminModule} from './firebase-admin.module';
+import { Project } from './domain/entities/project.entity';
+import { ProjectModule } from './presentation/project/project.module';
 
 @Module({
   imports: [
@@ -43,11 +45,12 @@ import {FirebaseAdminModule} from './firebase-admin.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Task],
+      entities: [User, Task, Project],
       synchronize: true,
     }),
     FirebaseAdminModule,
     AuthModule,
+    ProjectModule,
     TaskModule,
   ],
 })
