@@ -46,6 +46,24 @@ export class TaskService {
     }
   }
 
+  async findByAssigneesId(id: string, status: string){
+    try {
+      const tasks = await this.taskRepository.getTotalMyTask(id, status);
+      return tasks;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRecentTask(id: string){
+    try {
+      const tasks = await this.taskRepository.recentTask(id);
+      return tasks;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async update(id: string, updateTaskDto: UpdateTaskDto) {
     const project = await this.projectRepository.findProjectById(updateTaskDto.projectId);
     const assignees = await this.userRepository.findById(updateTaskDto.assignees);
@@ -63,5 +81,9 @@ export class TaskService {
 
   async remove(id: string) {
     await this.taskRepository.deleteTask(id);
+  }
+
+  async countTasksThisMonth(): Promise<number> {
+    return this.taskRepository.countTasksThisMonth();
   }
 }

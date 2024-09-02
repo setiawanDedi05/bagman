@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { TaskService } from 'src/application/services/task.service';
@@ -28,10 +29,26 @@ export class TaskController {
     return this.taskService.findAll();
   }
 
+  @Get('/count-this-month')
+  async countTasksThisMonth(): Promise<number> {
+    return await this.taskService.countTasksThisMonth();
+  }
+
+  @Get('search')
+  findByAssigneesId(@Query('assignees') id: string, @Query('status') status: string) {
+    return this.taskService.findByAssigneesId(id, status);
+  }
+
+  @Get('recent-task/:id')
+  recenTask(@Param('id') id: string) {
+    return this.taskService.getRecentTask(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.taskService.findOne(id);
   }
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
