@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { authService } from "@/services/auth/authService";
+import { authService } from "@/services/auth/auth-service";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 

@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
-import { authService } from "@/services/auth/authService";
+import { authService } from "@/services/auth/auth-service";
 import { toast } from "./use-toast";
 import { useAuthStore } from "@/store/auth-store";
 import { useRouter } from "next/navigation";
