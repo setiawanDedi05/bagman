@@ -18,7 +18,7 @@ import { EmailService } from 'src/application/services/email.service';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly emailService: EmailService
+    private readonly emailService: EmailService,
   ) {}
 
   @Post('register')
@@ -33,8 +33,7 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { accessToken } =
-      await this.authService.login(loginDto);
+    const { accessToken, user } = await this.authService.login(loginDto);
     response.cookie('token', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -42,7 +41,7 @@ export class AuthController {
       maxAge: 15 * 60 * 1000,
     });
 
-    return { message: 'Login Successfully' };
+    return { message: 'Login Successfully', user };
   }
 
   @Post('logout')
@@ -61,7 +60,11 @@ export class AuthController {
   @Get('verify-email')
   @HttpCode(HttpStatus.OK)
   async verifyEmail(@Query('token') token: string) {
-    await this.emailService.verifyEmail(token);
-    return { message: 'Email verified successfully' };
+    try {
+      const response = await this.emailService.verifyEmail(token);
+      return response;
+    } catch (error) {
+      throw error;
+    }
   }
 }
