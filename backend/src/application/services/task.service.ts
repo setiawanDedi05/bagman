@@ -4,6 +4,7 @@ import { UpdateTaskDto } from '../dto/task/update-task.dto';
 import { TaskRepository } from 'src/infrastructure/repositories/task.repository';
 import { NotificationService } from './notification.service';
 import { UserRepository } from 'src/infrastructure/repositories/user.repository';
+import { ProjectRepository } from 'src/infrastructure/repositories/project.repository';
 
 @Injectable()
 export class TaskService {
@@ -11,10 +12,24 @@ export class TaskService {
     private readonly taskRepository: TaskRepository,
     private readonly userRepository: UserRepository,
     private readonly notificationService: NotificationService,
+    private readonly projectRepository: ProjectRepository
   ) {}
 
   async create(createTaskDto: CreateTaskDto) {
-    return await this.taskRepository.createTask(createTaskDto);
+    const project = await this.projectRepository.findProjectById(createTaskDto.projectId);
+    const createdBy = await this.userRepository.findById(createTaskDto.createdBy);
+    const task = {
+      title: createTaskDto.title,
+      description: createTaskDto.description,
+      status: createTaskDto.status,
+      priority: createTaskDto.priority,
+      label: createTaskDto.label,
+      project,
+      createdBy
+
+    }
+    return await this.taskRepository.createTask(task)
+
   }
 
   async findAll() {
@@ -32,33 +47,21 @@ export class TaskService {
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto) {
-    return await this.update(id, updateTaskDto);
+    const project = await this.projectRepository.findProjectById(updateTaskDto.projectId);
+    const assignees = await this.userRepository.findById(updateTaskDto.assignees);
+    const task = {
+      title: updateTaskDto.title,
+      description: updateTaskDto.description,
+      status: updateTaskDto.status,
+      priority: updateTaskDto.priority,
+      label: updateTaskDto.label,
+      project,
+      assignees
+    }
+    return await this.taskRepository.updateTask(id, task);
   }
 
   async remove(id: string) {
-    try {
-      const task = await this.taskRepository.deleteTask(id);
-      if (!task) throw new NotFoundException(`Task with id ${id} not found`);
-      return task;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async asign(idTask: string, idUser: string) {
-    try {
-      const task = await this.taskRepository.asignTo(idTask, idUser);
-      if (!task)
-        throw new NotFoundException(`Task with id ${idTask} not found`);
-      const user = await this.userRepository.findById(idUser);
-      await this.notificationService.sendPushNotification(
-        user.fcmToken,
-        'There is task assign to you',
-        `${task.title} assign to you`,
-      );
-      return task;
-    } catch (error) {
-      throw error;
-    }
+    await this.taskRepository.deleteTask(id);
   }
 }
