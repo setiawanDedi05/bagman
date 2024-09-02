@@ -23,6 +23,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import AddTaskForm from "./components/add-task-form";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,7 +61,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex justify-between items-center py-4">
         <Input
           placeholder="Filter title..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -61,6 +70,20 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <Sheet>
+          <SheetTrigger className="w-[10em]">
+            <Button>Create</Button>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Create Task</SheetTitle>
+              <SheetDescription>
+                Keep the Momentum: Add a Task and Stay on Track!
+              </SheetDescription>
+            </SheetHeader>
+            <AddTaskForm />
+          </SheetContent>
+        </Sheet>
       </div>
       <div className="rounded-md border">
         <Table>
