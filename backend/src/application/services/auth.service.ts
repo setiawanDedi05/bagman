@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto } from 'src/application/dto/auth/register.dto';
@@ -27,7 +27,7 @@ export class AuthService {
     const { username, password } = requestData;
     const user = await this.validateUser(username, password);
     if (!user) {
-      throw new Error('Invalid credentials');
+      throw new ForbiddenException("Invalid Credential")
     }
     const payload = { username: user.username, sub: user.id };
     return {

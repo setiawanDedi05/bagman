@@ -30,6 +30,6 @@ export class UserRepository implements IUserRepository {
   }
 
   async findById(id: string): Promise<User> {
-    return await this.userRepository.findOneById(id);
+    return await this.userRepository.findOneBy({id});
   }
 }
