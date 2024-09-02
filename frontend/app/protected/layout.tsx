@@ -12,6 +12,7 @@ import { ModeToggle } from "@/components/ui/toggle-theme";
 import { UserNav } from "@/components/ui/user-nav";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard, LucidePaperclip, ProjectorIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const defaultLayout = [20, 32, 48];
@@ -22,7 +23,7 @@ export default function ProtectedPage({
   children: React.ReactNode;
 }>) {
   const [isCollapsed, setIsCollapsed] = useState(true);
-
+  const pathname = usePathname().split("/")[2];
   return (
     <section className="w-full">
       <div className="flex flex-col">
@@ -77,29 +78,30 @@ export default function ProtectedPage({
                   title: "Dashboard",
                   label: "",
                   icon: LayoutDashboard,
-                  variant: "ghost",
+                  variant: pathname === 'dashboard' ? "default" : "ghost",
                   to: "/protected/dashboard",
                 },
                 {
                   title: "Project",
                   label: "",
                   icon: ProjectorIcon,
-                  variant: "ghost",
+                  variant: pathname === 'projects' ? "default" : "ghost",
                   to: "/protected/projects",
                 },
                 {
                   title: "Task",
                   label: "",
                   icon: LucidePaperclip,
-                  variant: "ghost",
+                  variant: pathname === 'tasks' ? "default" : "ghost",
                   to: "/protected/tasks",
                 },
               ]}
             />
           </ResizablePanel>
-          <ResizableHandle withHandle />
+          <ResizableHandle />
           <ResizablePanel defaultSize={75}>
-            <div className="flex h-full items-start justify-start p-6">
+            <div className="flex flex-col h-full items-start justify-start p-6">
+              <h2 className="text-xl uppercase mb-10 font-bold">{pathname}</h2>
               {children}
             </div>
           </ResizablePanel>
@@ -110,4 +112,4 @@ export default function ProtectedPage({
       </div>
     </section>
   );
-}
+} 
