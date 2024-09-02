@@ -16,7 +16,7 @@ import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
+  title: z.string().min(2, {
     message: "username must be at least 2 characters.",
   }),
   description: z.string().min(6, {
@@ -29,7 +29,7 @@ export default function AddProjectForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      title: "",
       description: "",
       member: [],
     },
@@ -45,10 +45,10 @@ export default function AddProjectForm() {
       >
         <FormField
           control={form.control}
-          name="name"
+          name="title"
           render={({ field }) => (
             <FormItem className="flex flex-col justify-start items-start">
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input placeholder="bagman" {...field} />
               </FormControl>
