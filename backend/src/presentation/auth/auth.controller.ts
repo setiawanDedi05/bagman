@@ -33,21 +33,24 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { accessToken, user } = await this.authService.login(loginDto);
-    response.cookie('token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 15 * 60 * 1000,
-    });
+    try {
+      const { accessToken, user } = await this.authService.login(loginDto);
+      response.cookie('token', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 1000,
+      });
 
-    return { message: 'Login Successfully', user };
+      return { message: 'Login Successfully', user };
+    } catch (error) {
+      throw error
+    }
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Res({ passthrough: true }) response: Response) {
-    // Clear cookies
     response.clearCookie('token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
