@@ -1,6 +1,5 @@
+import { NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateTaskDto } from 'src/application/dto/task/create-task.dto';
-import { UpdateTaskDto } from 'src/application/dto/task/update-task.dto';
 import { Task } from 'src/domain/entities/task.entity';
 import { ITaskRepository } from 'src/domain/interface/task.repository.interface';
 import { Repository } from 'typeorm';
@@ -11,16 +10,9 @@ export class TaskRepository implements ITaskRepository {
     private readonly taskRepository: Repository<Task>,
   ) {}
 
-  async asignTo(idTask: string, idUser: string): Promise<Task> {
-    const task = await this.findTaskById(idTask);
-    if(!task) return
-    task.asign = idUser;
-    return await this.taskRepository.save(task);
-  }
-
-  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    const task = this.taskRepository.create(createTaskDto);
-    return await this.taskRepository.save(task);
+  async createTask(task: Partial<Task>): Promise<Task> {
+    const newTask = this.taskRepository.create(task);
+    return await this.taskRepository.save(newTask);
   }
 
   async findAllTasks(): Promise<Task[]> {
@@ -31,14 +23,20 @@ export class TaskRepository implements ITaskRepository {
     return await this.taskRepository.findOne({ where: { id } });
   }
 
-  async updateTask(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
-    await this.taskRepository.update(id, updateTaskDto);
+  async updateTask(id: string, updateData : Partial<Task>): Promise<Task> {
+    await this.taskRepository.update(id, updateData);
     return await this.findTaskById(id);
   }
 
   async deleteTask(id: string): Promise<Task> {
-    const task = this.findTaskById(id);
-    await this.taskRepository.delete(id);
-    return task;
+    try {
+      const findedTask = await this.findTaskById(id);
+      if (!findedTask)
+        throw new NotFoundException(`Project with ${id} not found`);
+      await this.taskRepository.delete(id);
+      return findedTask;
+    } catch (error) {
+      throw error;
+    }
   }
 }
