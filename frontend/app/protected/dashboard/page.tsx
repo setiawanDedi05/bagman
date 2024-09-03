@@ -27,7 +27,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   async function fetchData(): Promise<void> {
     try {

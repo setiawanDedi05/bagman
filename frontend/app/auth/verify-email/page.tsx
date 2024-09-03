@@ -37,7 +37,7 @@ export default function VerifyEmail() {
 
   useEffect(() => {
     verifyEmail();
-  }, []);
+  }, [verifyEmail]);
 
   return isValid ? (
     <Card className="w-[90%] md:w-[50%]">

@@ -122,7 +122,7 @@ export default function LoginPage() {
       <CardHeader className="text-start">
         <CardTitle>Login</CardTitle>
         <CardDescription className="text-start">
-          Don't Overrated, Overthinking and All kind of Over
+          Dont Overrated, Overthinking and All kind of Over
         </CardDescription>
       </CardHeader>
       <CardContent>
