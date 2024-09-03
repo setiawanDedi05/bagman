@@ -1,7 +1,7 @@
 import { api } from "../api"
 import { endpoint } from "../endpoints";
-import { LoginDto } from "./dto/loginDto"
-import { RegisterDto } from "./dto/registerDto";
+import { LoginDto } from "../dto/login-dto"
+import { RegisterDto } from "../dto/register-dto";
 
 export const authService = {
     login  : async (credentials: LoginDto) => {
