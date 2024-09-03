@@ -14,6 +14,11 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
+import { projectsService } from "@/services/projects/projects-service";
+import { useAuthStore } from "@/store/auth-store";
+import { CreateProjectRequest } from "@/services/dto/project-dto";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -21,21 +26,48 @@ const formSchema = z.object({
   }),
   description: z.string().min(6, {
     message: "password must be at least 6 charachters.",
-  }),
-  member: z.array(z.string()).optional(),
+  })
 });
 
 export default function AddProjectForm() {
+  const { user } = useAuthStore();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       description: "",
-      member: [],
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {}
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const requestData: CreateProjectRequest = {
+      ...values,
+      userId: user?.id!,
+    };
+    try {
+      const response = await projectsService.createProject(requestData);
+      if (response.status === 201) {
+        toast({
+          title: "Creating Project Success",
+          description: "Realize your idea",
+        });
+        router.push("/protected/projects")
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Creating Project Failed",
+          description: "You can try later",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Creating Project Failed",
+        description: error.message,
+      });
+    }
+  }
 
   return (
     <Form {...form}>
