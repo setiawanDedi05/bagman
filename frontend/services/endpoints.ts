@@ -6,9 +6,11 @@ export const endpoint = {
         verifyEmail: '/auth/verify-email'
     },
     projects: {
-        fetchAll: '/projects'
+        fetchAll: '/projects',
+        parent: '/projects'
     },
     tasks: {
+        parent: "/tasks",
         fetchTaskMine: '/tasks/search',
         recenTask: '/tasks/recent-task',
         countThisMonth: '/tasks/count-this-month'
