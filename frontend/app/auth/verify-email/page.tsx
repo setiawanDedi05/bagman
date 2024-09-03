@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { authService } from "@/services/auth/authService";
+import { authService } from "@/services/auth/auth-service";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
