@@ -29,7 +29,7 @@ export default function DashboardPage() {
     fetchData();
   }, []);
 
-  async function fetchData(): Promise<any> {
+  async function fetchData(): Promise<void> {
     try {
       const [backlog, onprogress, done, projects, recenTask, countThisMont] =
         await Promise.all([
