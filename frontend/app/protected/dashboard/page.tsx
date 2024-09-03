@@ -10,7 +10,7 @@ import {
 import { ProjectorIcon } from "lucide-react";
 import { RecentTask } from "./components/recent-task";
 import { dashboardService } from "@/services/dashboard/dashboard-service";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth-store";
 import { Task } from "@/services/dto/task-dto";
 
@@ -27,9 +27,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, []);
 
-  async function fetchData(): Promise<void> {
+  const fetchData = useCallback(async (): Promise<void> => {
     try {
       const [backlog, onprogress, done, projects, recenTask, countThisMont] =
         await Promise.all([
@@ -52,7 +52,7 @@ export default function DashboardPage() {
     } catch (error) {
       throw error;
     }
-  }
+  }, [dashboardService, setTotalTaskThisMonth, setTotalMyTask, setProjects, setRecenTask]);
 
   return (
     <div className="w-full grid gap-4 grid-cols-1 md:grid-cols-2">
