@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
-import { authService } from "@/services/auth/authService";
+import { authService } from "@/services/auth/auth-service";
 import { toast } from "./use-toast";
 import { useAuthStore } from "@/store/auth-store";
 import { useRouter } from "next/navigation";
@@ -50,10 +50,10 @@ export function UserNav() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
-              <AvatarImage
+              {/* <AvatarImage
                 src={`/avatars/${user?.username}.png`}
                 alt={`avatar-${user?.username}`}
-              />
+              /> */}
               <AvatarFallback>{user?.username?.slice(0, 2)}</AvatarFallback>
             </Avatar>
           </Button>

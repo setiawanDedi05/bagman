@@ -30,10 +30,10 @@ export class Task {
   label: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: string;
+  createdAt: Date;
   
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  updatedAt: string;
+  updatedAt: Date;
 
   @ManyToOne(() => Project, (project) => project.tasks)
   project: Project;
