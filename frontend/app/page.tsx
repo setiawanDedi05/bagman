@@ -17,8 +17,8 @@ const HomePage = () => {
           In a world filled with endless to-dos, our task management app helps
           you cut through the noise. With intuitive tools for organizing your
           tasks, you can focus on what truly matters and set yourself up for
-          success. Achieve more every day by turning today's plans into
-          tomorrow's accomplishments.
+          success. Achieve more every day by turning todays plans into
+          tomorrows accomplishments.
         </p>
       </div>
       <div className="flex mt-10 justify-center">
