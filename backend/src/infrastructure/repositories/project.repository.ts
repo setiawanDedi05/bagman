@@ -20,7 +20,7 @@ export class ProjectRepository implements IProjectRepository {
   }
 
   async findAllProjects(): Promise<Project[]> {
-    return await this.projectRepository.find();
+    return await this.projectRepository.find({relations: ["tasks", "owner"]});
   }
 
   async updateProject(
