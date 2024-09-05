@@ -38,14 +38,13 @@ export class AuthController {
       response.cookie('token', accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
-	partitioned: true,
+        sameSite: 'strict',
         maxAge: 60 * 60 * 1000,
       });
 
       return { message: 'Login Successfully', user };
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -55,8 +54,7 @@ export class AuthController {
     response.clearCookie('token', {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
-      partitioned: true
+      sameSite: 'strict'
     });
 
     return { message: 'Logout successful' };
