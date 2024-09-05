@@ -38,7 +38,8 @@ export class AuthController {
       response.cookie('token', accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        sameSite: 'none',
+	partitioned: true,
         maxAge: 60 * 60 * 1000,
       });
 
@@ -53,8 +54,9 @@ export class AuthController {
   async logout(@Res({ passthrough: true }) response: Response) {
     response.clearCookie('token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'none',
+      secure: true,
+      sameSite: 'none',
+      partitioned: true
     });
 
     return { message: 'Logout successful' };
