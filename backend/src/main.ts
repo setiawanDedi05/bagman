@@ -9,8 +9,9 @@ async function bootstrap() {
   app.use(helmet());
 
   const allowedOrigins = [
-    'https://8e39-114-124-246-116.ngrok-free.app',
-    'http://localhost:3000'
+    'https://bag-ose3i9vov-setiawandedi05s-projects.vercel.app',
+    'http://localhost:3000',
+    'https://bag-man.vercel.app'
   ]
 
   app.enableCors({
