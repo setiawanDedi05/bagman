@@ -9,9 +9,8 @@ async function bootstrap() {
   app.use(helmet());
 
   const allowedOrigins = [
-    'https://bag-ose3i9vov-setiawandedi05s-projects.vercel.app',
     'http://localhost:3000',
-    'https://bag-man.vercel.app'
+    'https://www.bagman.ds-porto.my.id'
   ]
 
   app.enableCors({
@@ -22,9 +21,10 @@ async function bootstrap() {
         callback(new Error('Not Allowed by Cors'))
       }
     },
-    methods: 'GET, POST, PUT, PATCH, HEAD, DELETE',
+    methods: 'GET, POST, PUT, PATCH, HEAD, DELETE, OPTION',
     credentials: true
-  })
+  });
+  app.setGlobalPrefix('api');
   app.use(cookieParser());
   await app.listen(process.env.PORT || 3001);
 }
