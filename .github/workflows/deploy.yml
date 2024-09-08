@@ -51,4 +51,4 @@ jobs:
 
     - name: Deploy to Biznet Gio
       run: |
-        ssh dedi05@103.196.153.135 "export PATH=$PATH:/home/dedi05/.nvm/versions/node/v22.7.0/bin/npm && cd /var/www/bag-man && git pull origin main && cd backend && npm install && npm run build && cd /frontend && npm install && npm run build && pm2 restart all"
+        ssh dedi05@103.196.153.135 "export PATH=$PATH:/home/dedi05/.nvm/versions/node/v22.7.0/bin && cd /var/www/bag-man && git pull origin main && cd backend && npm install && npm run build && cd /frontend && npm install && npm run build && pm2 restart all"
