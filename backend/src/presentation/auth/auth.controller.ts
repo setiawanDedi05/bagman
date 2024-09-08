@@ -37,8 +37,8 @@ export class AuthController {
       const { accessToken, user } = await this.authService.login(loginDto);
       response.cookie('token', accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: true,
+        sameSite: 'none',
         maxAge: 60 * 60 * 1000,
       });
 
@@ -54,7 +54,7 @@ export class AuthController {
     response.clearCookie('token', {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict'
+      sameSite: 'none'
     });
 
     return { message: 'Logout successful' };
