@@ -1,0 +1,36 @@
+name: Deploy to Biznet Gio
+
+on:
+  push:
+    branches:
+      - main   # Pipeline akan berjalan ketika ada push ke branch 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy to Biznet Gio
+      run: |
+        ssh dedi05@103.196.153.135 "cd /var/www/bag-man && git pull origin main && cd backend && npm install && npm run build && cd /frontend && npm install && npm run build && pm2 restart all"
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
