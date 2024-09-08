@@ -12,7 +12,7 @@ const HomePage = () => {
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           Welcome to Bagman
         </h1>
-        <p>Organize Today, Achieve Tomorrow</p>
+        <p>Organize Todays, Achieve Tomorrow</p>
         <p className="leading-7 [&:not(:first-child)]:mt-6">
           In a world filled with endless to-dos, our task management app helps
           you cut through the noise. With intuitive tools for organizing your
