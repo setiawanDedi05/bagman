@@ -1,18 +1,18 @@
 export const endpoint = {
     auth: {
-        login: '/auth/login',
-        register: '/auth/register',
-        logout: '/auth/logout',
-        verifyEmail: '/auth/verify-email'
+        login: '/api/auth/login',
+        register: '/api/auth/register',
+        logout: '/api/auth/logout',
+        verifyEmail: '/api/auth/verify-email'
     },
     projects: {
-        fetchAll: '/projects',
-        parent: '/projects'
+        fetchAll: '/api/projects',
+        parent: '/api/projects'
     },
     tasks: {
-        parent: "/tasks",
-        fetchTaskMine: '/tasks/search',
-        recenTask: '/tasks/recent-task',
-        countThisMonth: '/tasks/count-this-month'
+        parent: "/api/tasks",
+        fetchTaskMine: '/api/tasks/search',
+        recenTask: '/api/tasks/recent-task',
+        countThisMonth: '/api/tasks/count-this-month'
     }
 }
