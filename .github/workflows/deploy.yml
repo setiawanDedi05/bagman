@@ -51,4 +51,4 @@ jobs:
 
     - name: Deploy to Biznet Gio
       run: |
-        ssh dedi05@103.196.153.135 "cd /var/www/bag-man && git pull origin main && cd backend && npm install && npm run build && cd /frontend && npm install && npm run build && pm2 restart all"
+        ssh dedi05@103.196.153.135 "source ~/.bashrc && cd /var/www/bag-man && git pull origin main && cd backend && npm install && npm run build && cd /frontend && npm install && npm run build && pm2 restart all"
