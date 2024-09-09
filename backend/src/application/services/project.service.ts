@@ -16,6 +16,7 @@ export class ProjectService {
     const project = {
       title: createProjectData.title,
       description: createProjectData.description,
+      key: createProjectData.key,
       owner: user,
     };
     return await this.projectRepository.createProject(project);

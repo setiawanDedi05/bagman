@@ -106,7 +106,7 @@ export default function ProtectedPage({
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
-        <div className="border-t flex justify-center text-slate">
+        <div className="border-t w-full bg-slate-900 text-white flex justify-center text-slate fixed bottom-0">
           bagman@2024
         </div>
       </div>
