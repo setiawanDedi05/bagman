@@ -7,14 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  PriorityTaskEnum,
-  Task,
-} from "@/services/dto/task-dto";
+import { PriorityTaskEnum, Task } from "@/services/dto/task-dto";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import parse from 'html-react-parser';
+import parse from "html-react-parser";
 
 interface TaskListProps {
   tasks?: Array<Task>;
@@ -51,7 +48,7 @@ export default function TaskList({ tasks = [] }: TaskListProps) {
       </div>
       <div className="flex flex-col gap-2 p-4 pt-0">
         {filteredTasks.map((item) => (
-          <Card>
+          <Card key={item.id}>
             <CardHeader>
               <CardTitle className="flex justify-between align-center">
                 <span>{item.title}</span>
@@ -79,7 +76,9 @@ export default function TaskList({ tasks = [] }: TaskListProps) {
                 </Badge>
               </CardDescription>
             </CardHeader>
-            <CardContent>{parse(item.description.substring(0, 300))}</CardContent>
+            <CardContent>
+              {parse(item.description.substring(0, 300))}
+            </CardContent>
           </Card>
         ))}
       </div>

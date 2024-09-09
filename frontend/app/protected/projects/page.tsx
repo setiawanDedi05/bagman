@@ -41,9 +41,12 @@ export default function ProjectPage() {
     fetchData();
   }, []);
 
-  const goToDetail = useCallback((id: string) => {
-    router.push("/protected/projects/" + id);
-  }, []);
+  const goToDetail = useCallback(
+    (id: string) => {
+      router.push("/protected/projects/" + id);
+    },
+    [router]
+  );
 
   return (
     <div className="flex flex-col w-full gap-5">
