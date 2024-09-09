@@ -16,11 +16,17 @@ export class ProjectRepository implements IProjectRepository {
   }
 
   async findProjectById(id: string): Promise<Project | undefined> {
-    return await this.projectRepository.findOne({ where: { id } });
+    return await this.projectRepository.findOne({
+      where: { id, isDelete: false },
+      relations: ['tasks', 'owner'],
+    });
   }
 
   async findAllProjects(): Promise<Project[]> {
-    return await this.projectRepository.find({relations: ["tasks", "owner"]});
+    return await this.projectRepository.find({
+      where: { isDelete: false },
+      relations: ['tasks', 'owner'],
+    });
   }
 
   async updateProject(
@@ -43,7 +49,9 @@ export class ProjectRepository implements IProjectRepository {
       const findedProject = await this.findProjectById(id);
       if (!findedProject)
         throw new NotFoundException(`Project with ${id} not found`);
-      await this.projectRepository.delete(id);
+      await this.projectRepository.update(id, {
+        isDelete: true,
+      });
       return findedProject;
     } catch (error) {
       throw error;
