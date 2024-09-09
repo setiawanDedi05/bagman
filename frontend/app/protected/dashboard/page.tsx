@@ -47,7 +47,7 @@ export default function DashboardPage() {
     } catch (error) {
       throw error;
     }
-  }, [dashboardService, setTotalTaskThisMonth, setTotalMyTask, setProjects, setRecenTask, user]);
+  }, [setTotalTaskThisMonth, setTotalMyTask, setProjects, setRecenTask, user]);
 
   useEffect(() => {
     fetchData();
