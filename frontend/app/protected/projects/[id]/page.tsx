@@ -51,14 +51,14 @@ export default function DetailProject({ params }: DetailProjectProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     try {
       const response = await projectsService.findProject(id);
       setProject(response.data);
     } catch (error) {
       throw error;
     }
-  }
+  }, [id]);
 
   useEffect(() => {
     fetchData();
@@ -87,7 +87,7 @@ export default function DetailProject({ params }: DetailProjectProps) {
         description: error.message,
       });
     }
-  }, [id]);
+  }, [id, router]);
 
   return (
     <Card className="w-full border-none">
