@@ -16,9 +16,8 @@ import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { projectsService } from "@/services/projects/projects-service";
-import { useAuthStore } from "@/store/auth-store";
-import { CreateProjectRequest, ProjectDTO } from "@/services/dto/project-dto";
 import { Dispatch, SetStateAction } from "react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -32,52 +31,52 @@ const formSchema = z.object({
   }),
 });
 
-interface AddProjectFormProps {
-  setProjects: Dispatch<SetStateAction<ProjectDTO[]>>;
+interface EditProjectFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
+  idProject: string;
+  value: {
+    title?: string;
+    description?: string;
+    key?: string;
+  };
 }
 
-export default function AddProjectForm({
-  setProjects,
+export default function EditProjectForm({
   setOpen,
-}: AddProjectFormProps) {
-  const { user } = useAuthStore();
+  value,
+  idProject,
+}: EditProjectFormProps) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      key: "",
+      title: value?.title,
+      description: value?.description,
+      key: value?.key,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const requestData: CreateProjectRequest = {
-      ...values,
-      userId: user?.id!,
-    };
     try {
-      const response = await projectsService.createProject(requestData);
-      if (response.status === 201) {
+      const response = await projectsService.updateProject(values, idProject);
+      setOpen(false);
+      if (response.status === 200) {
         toast({
-          title: "Creating Project Success",
+          title: "Updating Project Success",
           description: "Realize your idea",
         });
-        setOpen(false);
-        setProjects((prevState: ProjectDTO[]) => {
-          return [...prevState, response.data];
-        });
+        router.push("/protected/projects");
       } else {
         toast({
           variant: "destructive",
-          title: "Creating Project Failed",
+          title: "Updating Project Failed",
           description: "You can try later",
         });
       }
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Creating Project Failed",
+        title: "Updating Project Failed",
         description: error.message,
       });
     }

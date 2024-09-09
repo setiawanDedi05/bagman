@@ -8,6 +8,10 @@ export class CreateProjectDto {
   @IsString()
   description?: string;
 
+  @IsOptional()
+  @IsString()
+  key?: string;
+
   @IsNotEmpty()
   @IsString()
   userId: string;
