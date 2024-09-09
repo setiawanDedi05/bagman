@@ -62,7 +62,7 @@ export default function DetailProject({ params }: DetailProjectProps) {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const onDelete = useCallback(async () => {
     try {
@@ -87,7 +87,7 @@ export default function DetailProject({ params }: DetailProjectProps) {
         description: error.message,
       });
     }
-  }, []);
+  }, [id]);
 
   return (
     <Card className="w-full border-none">

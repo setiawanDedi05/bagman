@@ -12,7 +12,6 @@ import { RecentTask } from "./components/recent-task";
 import { dashboardService } from "@/services/dashboard/dashboard-service";
 import { useCallback, useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth-store";
-import { Task } from "@/services/dto/task-dto";
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
@@ -24,10 +23,6 @@ export default function DashboardPage() {
     onprogress: 0,
     done: 0,
   });
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const fetchData = useCallback(async (): Promise<void> => {
     try {
@@ -52,7 +47,11 @@ export default function DashboardPage() {
     } catch (error) {
       throw error;
     }
-  }, [dashboardService, setTotalTaskThisMonth, setTotalMyTask, setProjects, setRecenTask]);
+  }, [dashboardService, setTotalTaskThisMonth, setTotalMyTask, setProjects, setRecenTask, user]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <div className="w-full grid gap-4 grid-cols-1 md:grid-cols-2">
