@@ -29,6 +29,9 @@ export class Task {
   @Column({default: "feature"})
   label: string;
 
+  @Column({ default: false })
+  isDelete: boolean;
+
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
   
