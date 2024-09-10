@@ -128,7 +128,7 @@ export default function AddProjectForm({
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="w-full lg:w-[200px]">Submit</Button>
       </form>
     </Form>
   );

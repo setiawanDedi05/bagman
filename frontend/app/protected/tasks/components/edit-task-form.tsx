@@ -32,6 +32,7 @@ import {
 import { tasksService } from "@/services/tasks/tasks-service";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from "@/components/ui/use-toast";
+import { SheetClose } from "@/components/ui/sheet";
 import CustomEditor from "@/components/ui/editor";
 import { Task } from "../columns";
 
@@ -48,12 +49,17 @@ const formSchema = z.object({
   projectId: z.string(),
 });
 
-interface AddTaskFormProps {
-  setTasks: Dispatch<SetStateAction<Task[]>>;
+interface EditTaskFormProps {
+  setTask: Dispatch<SetStateAction<Task | undefined>>;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  task?: Task;
 }
 
-export default function AddTaskForm({ setTasks, setOpen }: AddTaskFormProps) {
+export default function EditTaskForm({
+  setTask,
+  setOpen,
+  task,
+}: EditTaskFormProps) {
   const { user } = useAuthStore();
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
   async function fetchData() {
@@ -72,12 +78,12 @@ export default function AddTaskForm({ setTasks, setOpen }: AddTaskFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      status: StatusTaskEnum.BACKLOG,
-      label: LabelTaskEnum.FEATURE,
-      priority: PriorityTaskEnum.MEDIUM,
-      projectId: "",
+      title: task?.title,
+      description: task?.description,
+      status: task?.status,
+      label: task?.label,
+      priority: task?.priority,
+      projectId: task?.project?.id,
     },
   });
 
@@ -88,27 +94,28 @@ export default function AddTaskForm({ setTasks, setOpen }: AddTaskFormProps) {
     };
 
     try {
-      const response = await tasksService.createTask(requestData);
-      if (response.status === 201) {
+      const response = await tasksService.updateTask(
+        requestData,
+        task?.id || ""
+      );
+      if (response.status === 200) {
         toast({
-          title: "Creating Task Success",
+          title: "Updating Task Success",
           description: "Realize your idea",
         });
         setOpen(false);
-        setTasks((prevState: Task[]) => {
-          return [response.data, ...prevState];
-        });
+        setTask(response.data);
       } else {
         toast({
           variant: "destructive",
-          title: "Creating Task Failed",
+          title: "Updating Task Failed",
           description: "You can try later",
         });
       }
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Creating Task Failed",
+        title: "Updating Task Failed",
         description: error.message,
       });
     }
@@ -126,7 +133,10 @@ export default function AddTaskForm({ setTasks, setOpen }: AddTaskFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Project</FormLabel>
-              <Select onValueChange={field.onChange}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={task?.project?.id}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="project" />
                 </SelectTrigger>
@@ -236,9 +246,11 @@ export default function AddTaskForm({ setTasks, setOpen }: AddTaskFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full lg:w-[200px]">
-          Submit
-        </Button>
+        <SheetClose asChild>
+          <Button type="submit" className="w-full lg:w-[200px]">
+            Submit
+          </Button>
+        </SheetClose>
       </form>
     </Form>
   );

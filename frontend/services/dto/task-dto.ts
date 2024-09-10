@@ -27,10 +27,19 @@ export enum PriorityTaskEnum {
 export enum LabelTaskEnum {
     BUG = "bug",
     FEATURE = "feature",
-    DONE = "done"
+    DOCUMENTATION = "documentation"
 }
 
 export interface CreateTaskRequest {
+    title: string;
+    description: string;
+    status: StatusTaskEnum;
+    label: LabelTaskEnum;
+    priority: PriorityTaskEnum
+    projectId: string;
+    createdBy: string;
+}
+export interface UpdateTaskRequest {
     title: string;
     description: string;
     status: StatusTaskEnum;

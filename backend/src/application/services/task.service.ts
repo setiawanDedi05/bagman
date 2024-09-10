@@ -12,12 +12,16 @@ export class TaskService {
     private readonly taskRepository: TaskRepository,
     private readonly userRepository: UserRepository,
     private readonly notificationService: NotificationService,
-    private readonly projectRepository: ProjectRepository
+    private readonly projectRepository: ProjectRepository,
   ) {}
 
   async create(createTaskDto: CreateTaskDto) {
-    const project = await this.projectRepository.findProjectById(createTaskDto.projectId);
-    const createdBy = await this.userRepository.findById(createTaskDto.createdBy);
+    const project = await this.projectRepository.findProjectById(
+      createTaskDto.projectId,
+    );
+    const createdBy = await this.userRepository.findById(
+      createTaskDto.createdBy,
+    );
     const task = {
       title: createTaskDto.title,
       description: createTaskDto.description,
@@ -25,15 +29,13 @@ export class TaskService {
       priority: createTaskDto.priority,
       label: createTaskDto.label,
       project,
-      createdBy
-
-    }
-    return await this.taskRepository.createTask(task)
-
+      createdBy,
+    };
+    return await this.taskRepository.createTask(task);
   }
 
-  async findAll() {
-    return await this.taskRepository.findAllTasks();
+  async findAll(offset: number) {
+    return await this.taskRepository.findAllTasks(offset);
   }
 
   async findOne(id: string) {
@@ -46,7 +48,7 @@ export class TaskService {
     }
   }
 
-  async findByAssigneesId(id: string, status: string){
+  async findByAssigneesId(id: string, status: string) {
     try {
       const tasks = await this.taskRepository.getTotalMyTask(id, status);
       return tasks;
@@ -55,7 +57,7 @@ export class TaskService {
     }
   }
 
-  async getRecentTask(id: string){
+  async getRecentTask(id: string) {
     try {
       const tasks = await this.taskRepository.recentTask(id);
       return tasks;
@@ -65,8 +67,12 @@ export class TaskService {
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto) {
-    const project = await this.projectRepository.findProjectById(updateTaskDto.projectId);
-    const assignees = await this.userRepository.findById(updateTaskDto.assignees);
+    const project = await this.projectRepository.findProjectById(
+      updateTaskDto.projectId,
+    );
+    const assignees = await this.userRepository.findById(
+      updateTaskDto.assignees,
+    );
     const task = {
       title: updateTaskDto.title,
       description: updateTaskDto.description,
@@ -74,8 +80,8 @@ export class TaskService {
       priority: updateTaskDto.priority,
       label: updateTaskDto.label,
       project,
-      assignees
-    }
+      assignees,
+    };
     return await this.taskRepository.updateTask(id, task);
   }
 
