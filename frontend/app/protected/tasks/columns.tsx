@@ -13,14 +13,23 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { labels, priorities, statuses } from "./utils/mapper";
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+import {
+  LabelTaskEnum,
+  PriorityTaskEnum,
+  StatusTaskEnum,
+} from "@/services/dto/task-dto";
+import { ProjectDTO } from "@/services/dto/project-dto";
 
 export type Task = {
   id: string;
   title: string;
   description?: string;
-  label: "feature" | "bug" | "documentation";
-  priority: "low" | "medium" | "high";
-  status: "backlog" | "onprogress" | "onreview" | "done";
+  label: LabelTaskEnum;
+  priority: PriorityTaskEnum;
+  status: StatusTaskEnum;
+  project?: ProjectDTO;
+  createdAt: string;
 };
 
 export const columns: ColumnDef<Task>[] = [
@@ -99,7 +108,7 @@ export const columns: ColumnDef<Task>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Title
+          Summary
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -121,6 +130,7 @@ export const columns: ColumnDef<Task>[] = [
     id: "actions",
     cell: ({ row }) => {
       const task = row.original;
+      const router = useRouter();
 
       return (
         <DropdownMenu>
@@ -139,7 +149,11 @@ export const columns: ColumnDef<Task>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Change Status</DropdownMenuItem>
-            <DropdownMenuItem>View Task details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.push("/protected/tasks/" + task.id)}
+            >
+              View Task details
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
