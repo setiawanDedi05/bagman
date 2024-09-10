@@ -25,8 +25,10 @@ export class TaskController {
   }
 
   @Get()
-  findAll() {
-    return this.taskService.findAll();
+  findAll(@Query('page') page: string) {
+    const pageNum = page ? parseInt(page) : 1;
+    const offset = 10 * (pageNum - 1);
+    return this.taskService.findAll(offset);
   }
 
   @Get('/count-this-month')
@@ -35,7 +37,10 @@ export class TaskController {
   }
 
   @Get('search')
-  findByAssigneesId(@Query('assignees') id: string, @Query('status') status: string) {
+  findByAssigneesId(
+    @Query('assignees') id: string,
+    @Query('status') status: string,
+  ) {
     return this.taskService.findByAssigneesId(id, status);
   }
 
@@ -48,7 +53,6 @@ export class TaskController {
   findOne(@Param('id') id: string) {
     return this.taskService.findOne(id);
   }
-
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
