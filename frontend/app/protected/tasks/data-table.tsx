@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
@@ -32,18 +32,36 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import AddTaskForm from "./components/add-task-form";
+import { Task } from "./columns";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { useSearchParams } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  setTasks: Dispatch<SetStateAction<Task[]>>;
+  total: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  setTasks,
+  total,
 }: DataTableProps<TData, TValue>) {
+  const [open, setOpen] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const queryParams = useSearchParams();
+  const page = queryParams.get("page");
+
   const table = useReactTable({
     data,
     columns,
@@ -70,18 +88,18 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <Sheet>
+        <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger className="w-[10em]">
             <Button>Create</Button>
           </SheetTrigger>
-          <SheetContent>
+          <SheetContent side="bottom" className="h-[70%] overflow-scroll">
             <SheetHeader>
               <SheetTitle>Create Task</SheetTitle>
               <SheetDescription>
                 Keep the Momentum: Add a Task and Stay on Track!
               </SheetDescription>
             </SheetHeader>
-            <AddTaskForm />
+            <AddTaskForm setOpen={setOpen} setTasks={setTasks} />
           </SheetContent>
         </Sheet>
       </div>
@@ -135,24 +153,35 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
+      {Math.ceil(total / 10) > 1 && (
+        <Pagination className="mt-5 flex justify-end">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href={
+                  page ? `/protected/tasks?page=${parseInt(page) - 1}` : "#"
+                }
+              />
+            </PaginationItem>
+            {Array.from({ length: Math.ceil(total / 10) }, (_, index) => (
+              <PaginationItem>
+                <PaginationLink href={`/protected/tasks?page=${index + 1}`}>
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                href={
+                  !page && parseInt(page || "1") < Math.ceil(total / 10)
+                    ? `/protected/tasks?page=${parseInt(page || "1") + 1}`
+                    : "#"
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 }

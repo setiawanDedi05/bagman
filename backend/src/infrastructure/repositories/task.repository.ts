@@ -15,12 +15,27 @@ export class TaskRepository implements ITaskRepository {
     return await this.taskRepository.save(newTask);
   }
 
-  async findAllTasks(): Promise<Task[]> {
-    return await this.taskRepository.find();
+  async findAllTasks(offset: number): Promise<{ content: Task[]; total_data: number }> {
+    const response = await this.taskRepository.findAndCount({
+      where: { project: { isDelete: false }, isDelete: false },
+      order: {
+        createdAt: 'desc',
+      },
+      take: 10,
+      skip: offset,
+      relations: ['project'],
+    });
+    return {
+      content: response[0],
+      total_data: response[1],
+    };
   }
 
   async findTaskById(id: string): Promise<Task> {
-    return await this.taskRepository.findOne({ where: { id } });
+    return await this.taskRepository.findOne({
+      where: { id },
+      relations: ['project'],
+    });
   }
 
   async getTotalMyTask(assigneesId: string, status: string): Promise<number> {
@@ -39,7 +54,9 @@ export class TaskRepository implements ITaskRepository {
       const findedTask = await this.findTaskById(id);
       if (!findedTask)
         throw new NotFoundException(`Project with ${id} not found`);
-      await this.taskRepository.delete(id);
+      await this.taskRepository.update(id, {
+        isDelete: true,
+      });
       return findedTask;
     } catch (error) {
       throw error;
