@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, Suspense, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
@@ -160,33 +160,33 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       {Math.ceil(total / 10) > 1 && (
-        <Pagination className="mt-5 flex justify-end">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href={
-                  page ? `?page=${parseInt(page) - 1}` : ""
-                }
-              />
-            </PaginationItem>
-            {Array.from({ length: Math.ceil(total / 10) }, (_, index) => (
-              <PaginationItem key={`pagination-item-${index}`}>
-                <PaginationLink href={`?page=${index + 1}`}>
-                  {index + 1}
-                </PaginationLink>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Pagination className="mt-5 flex justify-end">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href={page ? `?page=${parseInt(page) - 1}` : ""}
+                />
               </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                href={
-                  !page && parseInt(page || "1") < Math.ceil(total / 10)
-                    ? `?page=${parseInt(page || "1") + 1}`
-                    : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              {Array.from({ length: Math.ceil(total / 10) }, (_, index) => (
+                <PaginationItem key={`pagination-item-${index}`}>
+                  <PaginationLink href={`?page=${index + 1}`}>
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href={
+                    !page && parseInt(page || "1") < Math.ceil(total / 10)
+                      ? `?page=${parseInt(page || "1") + 1}`
+                      : ""
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </Suspense>
       )}
     </div>
   );
