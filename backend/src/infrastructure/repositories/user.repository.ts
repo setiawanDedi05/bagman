@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RegisterDto } from 'src/application/dto/auth/register.dto';
 import { User } from 'src/domain/entities/user.entity';
 import { IUserRepository } from 'src/domain/interface/user.repository.interface';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 export class UserRepository implements IUserRepository {
   constructor(
     @InjectRepository(User)
@@ -25,11 +25,18 @@ export class UserRepository implements IUserRepository {
     return await this.userRepository.findOneBy({ username });
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+  async findAll(username?: string): Promise<User[]> {
+    const response = await this.userRepository.find({
+      where: {
+        username: Like(`%${username}%`),
+      },
+      take: 10,
+    });
+    console.log({ response });
+    return response;
   }
 
   async findById(id: string): Promise<User> {
-    return await this.userRepository.findOneBy({id});
+    return await this.userRepository.findOneBy({ id });
   }
 }
