@@ -13,13 +13,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { labels, priorities, statuses } from "./utils/mapper";
 import { Badge } from "@/components/ui/badge";
-import { useRouter } from "next/navigation";
 import {
   LabelTaskEnum,
   PriorityTaskEnum,
   StatusTaskEnum,
 } from "@/services/dto/task-dto";
 import { ProjectDTO } from "@/services/dto/project-dto";
+import Link from "next/link";
 
 export type Task = {
   id: string;
@@ -130,7 +130,6 @@ export const columns: ColumnDef<Task>[] = [
     id: "actions",
     cell: ({ row }) => {
       const task = row.original;
-      const router = useRouter();
 
       return (
         <DropdownMenu>
@@ -149,10 +148,10 @@ export const columns: ColumnDef<Task>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Change Status</DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => router.push("/protected/tasks/" + task.id)}
-            >
-              View Task details
+            <DropdownMenuItem>
+              <Link href={`/protected/tasks/${task.id}`}>
+                View Task details
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
