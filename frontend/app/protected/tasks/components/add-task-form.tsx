@@ -16,7 +16,9 @@ import { z } from "zod";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -40,6 +42,18 @@ import { useAuthStore } from "@/store/auth-store";
 import { toast } from "@/components/ui/use-toast";
 import CustomEditor from "@/components/ui/editor";
 import { Task } from "../columns";
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command";
+import SelectPeople from "./select-people";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -52,6 +66,7 @@ const formSchema = z.object({
   label: z.nativeEnum(LabelTaskEnum),
   priority: z.nativeEnum(PriorityTaskEnum),
   projectId: z.string(),
+  assignees: z.string(),
 });
 
 interface AddTaskFormProps {
@@ -67,7 +82,7 @@ export default function AddTaskForm({
 }: AddTaskFormProps) {
   const { user } = useAuthStore();
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
-
+  const [search, setSearch] = useState<string>("");
   const fetchData = useCallback(async () => {
     try {
       const response = await projectsService.allProject();
@@ -83,6 +98,10 @@ export default function AddTaskForm({
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const onChangeSearch = useCallback((event: any) => {
+    setSearch(event.target.value);
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -238,6 +257,28 @@ export default function AddTaskForm({
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="assignees"
+          render={({ field }) => (
+            <FormItem className="flex flex-col justify-start items-start">
+              <FormLabel>Assignees</FormLabel>
+              <FormControl>
+                <>
+                  <Input
+                    placeholder="Search People..."
+                    value={search}
+                    onChange={onChangeSearch}
+                    className="max-w-sm"
+                  />
+                  <SelectPeople input={search} />
+                </>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="description"
