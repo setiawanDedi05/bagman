@@ -5,6 +5,9 @@ export const endpoint = {
         logout: '/api/auth/logout',
         verifyEmail: '/api/auth/verify-email'
     },
+    user: {
+        parent: '/api/user'
+    },
     projects: {
         fetchAll: '/api/projects',
         parent: '/api/projects'
