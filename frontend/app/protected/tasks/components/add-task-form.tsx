@@ -20,7 +20,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { projectsService } from "@/services/projects/projects-service";
 import { ProjectDTO } from "@/services/dto/project-dto";
 import {
@@ -51,23 +57,32 @@ const formSchema = z.object({
 interface AddTaskFormProps {
   setTasks: Dispatch<SetStateAction<Task[]>>;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  setTotal: Dispatch<SetStateAction<number>>;
 }
 
-export default function AddTaskForm({ setTasks, setOpen }: AddTaskFormProps) {
+export default function AddTaskForm({
+  setTasks,
+  setOpen,
+  setTotal,
+}: AddTaskFormProps) {
   const { user } = useAuthStore();
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
-  async function fetchData() {
+
+  const fetchData = useCallback(async () => {
     try {
       const response = await projectsService.allProject();
       setProjects(response.data);
+      setTotal((prevState: number) => {
+        return prevState++;
+      });
     } catch (error) {
       throw error;
     }
-  }
+  }, [setProjects, setTotal]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

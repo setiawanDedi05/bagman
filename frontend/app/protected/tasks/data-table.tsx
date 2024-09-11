@@ -47,6 +47,7 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   setTasks: Dispatch<SetStateAction<Task[]>>;
+  setTotal: Dispatch<SetStateAction<number>>;
   total: number;
 }
 
@@ -55,6 +56,7 @@ export function DataTable<TData, TValue>({
   data,
   setTasks,
   total,
+  setTotal,
 }: DataTableProps<TData, TValue>) {
   const [open, setOpen] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -99,7 +101,11 @@ export function DataTable<TData, TValue>({
                 Keep the Momentum: Add a Task and Stay on Track!
               </SheetDescription>
             </SheetHeader>
-            <AddTaskForm setOpen={setOpen} setTasks={setTasks} />
+            <AddTaskForm
+              setOpen={setOpen}
+              setTasks={setTasks}
+              setTotal={setTotal}
+            />
           </SheetContent>
         </Sheet>
       </div>
@@ -159,13 +165,13 @@ export function DataTable<TData, TValue>({
             <PaginationItem>
               <PaginationPrevious
                 href={
-                  page ? `/protected/tasks?page=${parseInt(page) - 1}` : "#"
+                  page ? `?page=${parseInt(page) - 1}` : ""
                 }
               />
             </PaginationItem>
             {Array.from({ length: Math.ceil(total / 10) }, (_, index) => (
-              <PaginationItem>
-                <PaginationLink href={`/protected/tasks?page=${index + 1}`}>
+              <PaginationItem key={`pagination-item-${index}`}>
+                <PaginationLink href={`?page=${index + 1}`}>
                   {index + 1}
                 </PaginationLink>
               </PaginationItem>
@@ -174,8 +180,8 @@ export function DataTable<TData, TValue>({
               <PaginationNext
                 href={
                   !page && parseInt(page || "1") < Math.ceil(total / 10)
-                    ? `/protected/tasks?page=${parseInt(page || "1") + 1}`
-                    : "#"
+                    ? `?page=${parseInt(page || "1") + 1}`
+                    : ""
                 }
               />
             </PaginationItem>
