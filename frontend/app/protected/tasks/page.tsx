@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Task, columns } from "./columns";
 import { DataTable } from "./data-table";
 import { tasksService } from "@/services/tasks/tasks-service";
@@ -12,19 +12,22 @@ export default function TasksPage() {
   const queryParams = useSearchParams();
   const page = queryParams.get("page");
 
+  const fetchData = useCallback(
+    async (page: string) => {
+      try {
+        const response = await tasksService.allTask(page);
+        setTasks(response.data.content);
+        setTotalTasks(response.data.total_data);
+      } catch (error) {
+        throw error;
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     fetchData(page || "1");
-  }, []);
-
-  const fetchData = async (page: string) => {
-    try {
-      const response = await tasksService.allTask(page);
-      setTasks(response.data.content);
-      setTotalTasks(response.data.total_data);
-    } catch (error) {
-      throw error;
-    }
-  };
+  }, [page, fetchData]);
 
   return (
     <div className="container mx-auto py-10">
@@ -33,6 +36,7 @@ export default function TasksPage() {
         data={tasks}
         total={totalTasks}
         setTasks={setTasks}
+        setTotal={setTotalTasks}
       />
     </div>
   );
