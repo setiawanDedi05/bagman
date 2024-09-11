@@ -18,6 +18,9 @@ export class User {
   @Column({ unique: true })
   username: string;
 
+  @Column({ default: '' })
+  name: string;
+
   @Column({ unique: true })
   email: string;
 
@@ -37,11 +40,11 @@ export class User {
   updatedAt: Date;
 
   @OneToMany(() => Project, (project) => project.owner)
-  projects: Project[]
+  projects: Project[];
 
   @OneToMany(() => Task, (task) => task.createdBy)
   createdTasks: Task[];
 
   @OneToMany(() => Task, (task) => task.assignees)
-  assignedTask: Task[]
+  assignedTask: Task[];
 }

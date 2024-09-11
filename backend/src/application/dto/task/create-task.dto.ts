@@ -40,5 +40,5 @@ export class CreateTaskDto {
 
   @IsOptional()
   @IsString()
-  assignees: string[];
+  assignees: string;
 }
