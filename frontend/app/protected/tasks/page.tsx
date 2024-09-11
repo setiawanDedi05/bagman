@@ -12,18 +12,15 @@ export default function TasksPage() {
   const queryParams = useSearchParams();
   const page = queryParams.get("page");
 
-  const fetchData = useCallback(
-    async (page: string) => {
-      try {
-        const response = await tasksService.allTask(page);
-        setTasks(response.data.content);
-        setTotalTasks(response.data.total_data);
-      } catch (error) {
-        throw error;
-      }
-    },
-    []
-  );
+  const fetchData = useCallback(async (page: string) => {
+    try {
+      const response = await tasksService.allTask(page);
+      setTasks(response.data.content);
+      setTotalTasks(response.data.total_data);
+    } catch (error) {
+      throw error;
+    }
+  }, []);
 
   useEffect(() => {
     fetchData(page || "1");

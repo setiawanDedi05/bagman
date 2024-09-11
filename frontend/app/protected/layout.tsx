@@ -13,7 +13,7 @@ import { UserNav } from "@/components/ui/user-nav";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard, LucidePaperclip, ProjectorIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 const defaultLayout = [20, 32, 48];
 
@@ -78,21 +78,21 @@ export default function ProtectedPage({
                   title: "Dashboard",
                   label: "",
                   icon: LayoutDashboard,
-                  variant: pathname === 'dashboard' ? "default" : "ghost",
+                  variant: pathname === "dashboard" ? "default" : "ghost",
                   to: "/protected/dashboard",
                 },
                 {
                   title: "Project",
                   label: "",
                   icon: ProjectorIcon,
-                  variant: pathname === 'projects' ? "default" : "ghost",
+                  variant: pathname === "projects" ? "default" : "ghost",
                   to: "/protected/projects",
                 },
                 {
                   title: "Task",
                   label: "",
                   icon: LucidePaperclip,
-                  variant: pathname === 'tasks' ? "default" : "ghost",
+                  variant: pathname === "tasks" ? "default" : "ghost",
                   to: "/protected/tasks",
                 },
               ]}
@@ -102,7 +102,7 @@ export default function ProtectedPage({
           <ResizablePanel defaultSize={75}>
             <div className="flex flex-col h-full items-start justify-start p-6">
               <h2 className="text-xl uppercase mb-10 font-bold">{pathname}</h2>
-              {children}
+              <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
@@ -112,4 +112,4 @@ export default function ProtectedPage({
       </div>
     </section>
   );
-} 
+}
