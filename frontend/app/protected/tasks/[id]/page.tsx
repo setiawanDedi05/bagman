@@ -135,7 +135,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
               <SheetTrigger className="self-end">
                 <Button variant="outline">Edit</Button>
               </SheetTrigger>
-              <SheetContent side="bottom" className="h-auto">
+              <SheetContent side="bottom" className="h-[70%] overflow-scroll">
                 <SheetHeader>
                   <SheetTitle>Edit Task {task?.title}</SheetTitle>
                   <SheetDescription>

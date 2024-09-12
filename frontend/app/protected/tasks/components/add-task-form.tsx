@@ -54,6 +54,8 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import SelectPeople from "./select-people";
+import { Trash2Icon } from "lucide-react";
+import ClearAssignee from "./clear-assignee";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -265,13 +267,23 @@ export default function AddTaskForm({
               <FormLabel>Assignees</FormLabel>
               <FormControl>
                 <>
-                  <Input
-                    placeholder="Search People..."
-                    value={search}
-                    onChange={onChangeSearch}
-                    className="max-w-sm"
-                  />
-                  <SelectPeople input={search} />
+                  <div className="flex gap-5">
+                    <Input
+                      placeholder="Search People..."
+                      value={search}
+                      onChange={onChangeSearch}
+                      className="max-w-sm"
+                      disabled={field.value !== undefined && field.value !== ""}
+                    />
+                    {field.value && <ClearAssignee form={form} />}
+                  </div>
+                  {!field.value && (
+                    <SelectPeople
+                      input={search}
+                      field={field}
+                      setInput={setSearch}
+                    />
+                  )}
                 </>
               </FormControl>
               <FormMessage />
@@ -292,7 +304,7 @@ export default function AddTaskForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full lg:w-[200px]">
+        <Button type="submit" className="w-full md:w-[200px]">
           Submit
         </Button>
       </form>
