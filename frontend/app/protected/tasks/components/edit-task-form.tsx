@@ -20,7 +20,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { projectsService } from "@/services/projects/projects-service";
 import { ProjectDTO } from "@/services/dto/project-dto";
 import {
@@ -35,6 +41,8 @@ import { toast } from "@/components/ui/use-toast";
 import { SheetClose } from "@/components/ui/sheet";
 import CustomEditor from "@/components/ui/editor";
 import { Task } from "../columns";
+import SelectPeople from "./select-people";
+import ClearAssignee from "./clear-assignee";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -47,6 +55,7 @@ const formSchema = z.object({
   label: z.nativeEnum(LabelTaskEnum),
   priority: z.nativeEnum(PriorityTaskEnum),
   projectId: z.string(),
+  assignees: z.string(),
 });
 
 interface EditTaskFormProps {
@@ -62,17 +71,14 @@ export default function EditTaskForm({
 }: EditTaskFormProps) {
   const { user } = useAuthStore();
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
-  async function fetchData() {
+  const [search, setSearch] = useState<string>(task?.assignees?.username || "");
+  const fetchData = useCallback(async () => {
     try {
       const response = await projectsService.allProject();
       setProjects(response.data);
     } catch (error) {
       throw error;
     }
-  }
-
-  useEffect(() => {
-    fetchData();
   }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -84,6 +90,7 @@ export default function EditTaskForm({
       label: task?.label,
       priority: task?.priority,
       projectId: task?.project?.id,
+      assignees: task?.assignees?.id,
     },
   });
 
@@ -120,6 +127,14 @@ export default function EditTaskForm({
       });
     }
   }
+
+  const onChangeSearch = useCallback((event: any) => {
+    setSearch(event.target.value);
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <Form {...form}>
@@ -233,6 +248,40 @@ export default function EditTaskForm({
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="assignees"
+          render={({ field }) => (
+            <FormItem className="flex flex-col justify-start items-start">
+              <FormLabel>Assignees</FormLabel>
+              <FormControl>
+                <>
+                  <div className="flex gap-5">
+                    <Input
+                      placeholder="Search People..."
+                      value={search}
+                      onChange={onChangeSearch}
+                      className="max-w-sm"
+                      defaultValue={task?.assignees?.username}
+                      disabled={field.value !== undefined && field.value !== ""}
+                    />
+                    {field.value && <ClearAssignee form={form} />}
+                  </div>
+                  {!field.value && (
+                    <SelectPeople
+                      input={search}
+                      field={field}
+                      setInput={setSearch}
+                    />
+                  )}
+                </>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="description"

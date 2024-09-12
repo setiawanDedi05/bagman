@@ -34,7 +34,7 @@ export class TaskRepository implements ITaskRepository {
   async findTaskById(id: string): Promise<Task> {
     return await this.taskRepository.findOne({
       where: { id },
-      relations: ['project'],
+      relations: ['project', 'project.owner', 'assignees'],
     });
   }
 

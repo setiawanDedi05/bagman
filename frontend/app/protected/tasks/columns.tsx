@@ -20,6 +20,7 @@ import {
 } from "@/services/dto/task-dto";
 import { ProjectDTO } from "@/services/dto/project-dto";
 import Link from "next/link";
+import { User } from "@/services/dto/user";
 
 export type Task = {
   id: string;
@@ -29,7 +30,9 @@ export type Task = {
   priority: PriorityTaskEnum;
   status: StatusTaskEnum;
   project?: ProjectDTO;
+  assignees?: User;
   createdAt: string;
+  updatedAt: string;
 };
 
 export const columns: ColumnDef<Task>[] = [
@@ -147,7 +150,6 @@ export const columns: ColumnDef<Task>[] = [
               Copy Task ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Change Status</DropdownMenuItem>
             <DropdownMenuItem>
               <Link href={`/protected/tasks/${task.id}`}>
                 View Task details

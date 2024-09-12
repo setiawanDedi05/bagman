@@ -6,6 +6,6 @@ export interface IUserRepository {
   findByUsername(username: string): Promise<User>;
   findByEmail(email: string): Promise<User>;
   findById(id: string): Promise<User>;
-  findAll(): Promise<User[]>;
+  findAll(username?: string): Promise<User[]>;
   update(user: User): Promise<any>;
 }
