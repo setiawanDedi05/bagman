@@ -8,11 +8,12 @@ import { AuthModule } from '../auth/auth.module';
 import { NotificationService } from 'src/application/services/notification.service';
 import { Project } from 'src/domain/entities/project.entity';
 import { ProjectRepository } from 'src/infrastructure/repositories/project.repository';
+import { EmailService } from 'src/application/services/email.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Task, Project]), AuthModule],
   controllers: [TaskController],
-  providers: [TaskService, TaskRepository, NotificationService, ProjectRepository],
+  providers: [TaskService, EmailService , TaskRepository, NotificationService, ProjectRepository],
   exports: [TaskService],
 })
 export class TaskModule {}
