@@ -1,13 +1,39 @@
 "use client";
 
+import {
+  LabelTaskEnum,
+  PriorityTaskEnum,
+  StatusTaskEnum,
+} from "@/services/dto/task-dto";
 import { User } from "@/services/dto/user";
 import { userService } from "@/services/user/user-service";
-import { useCallback, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import { ControllerRenderProps } from "react-hook-form";
 
 interface SelectPeopleProps {
   input: string;
+  field: ControllerRenderProps<{
+    title: string;
+    description: string;
+    status: StatusTaskEnum;
+    label: LabelTaskEnum;
+    priority: PriorityTaskEnum;
+    projectId: string;
+    assignees: string;
+  }>;
+  setInput: Dispatch<SetStateAction<string>>;
 }
-export default function SelectPeople({ input }: SelectPeopleProps) {
+export default function SelectPeople({
+  input,
+  field,
+  setInput,
+}: SelectPeopleProps) {
   const [peoples, setPeoples] = useState<User[]>([]);
 
   const fetchData = useCallback(async () => {
@@ -25,13 +51,33 @@ export default function SelectPeople({ input }: SelectPeopleProps) {
 
   useEffect(() => {
     fetchData();
-  }, [input]);
+  }, [input, fetchData]);
+
+  const handleOnclick = useCallback(
+    (people: User) => {
+      const stringToEvent = { target: { value: people.id } };
+      setInput(people.username);
+      field.onChange(stringToEvent);
+      setPeoples([]);
+    },
+    [setPeoples, setInput, field]
+  );
+
+  if (!peoples.length) {
+    return <></>;
+  }
 
   return (
     <div className="flex flex-col w-[380px] p-5">
       {peoples.map((people: User) => {
         return (
-          <div key={people.id} className="flex justify-between gap-10">
+          <div
+            key={people.id}
+            onClick={() => {
+              handleOnclick(people);
+            }}
+            className="flex justify-between gap-10"
+          >
             <span>{people.username}</span>
             <span>{people.name}</span>
           </div>
