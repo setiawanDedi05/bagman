@@ -5,33 +5,54 @@ import { TaskRepository } from 'src/infrastructure/repositories/task.repository'
 import { NotificationService } from './notification.service';
 import { UserRepository } from 'src/infrastructure/repositories/user.repository';
 import { ProjectRepository } from 'src/infrastructure/repositories/project.repository';
+import { EmailService } from './email.service';
 
 @Injectable()
 export class TaskService {
   constructor(
     private readonly taskRepository: TaskRepository,
     private readonly userRepository: UserRepository,
+    private readonly emailService: EmailService,
     private readonly notificationService: NotificationService,
     private readonly projectRepository: ProjectRepository,
   ) {}
 
   async create(createTaskDto: CreateTaskDto) {
-    const project = await this.projectRepository.findProjectById(
-      createTaskDto.projectId,
-    );
-    const createdBy = await this.userRepository.findById(
-      createTaskDto.createdBy,
-    );
-    const task = {
-      title: createTaskDto.title,
-      description: createTaskDto.description,
-      status: createTaskDto.status,
-      priority: createTaskDto.priority,
-      label: createTaskDto.label,
-      project,
-      createdBy,
-    };
-    return await this.taskRepository.createTask(task);
+    try {
+      const project = await this.projectRepository.findProjectById(
+        createTaskDto.projectId,
+      );
+      const createdBy = await this.userRepository.findById(
+        createTaskDto.createdBy,
+      );
+      const assignees = await this.userRepository.findById(
+        createTaskDto.assignees,
+      );
+      const task = {
+        title: createTaskDto.title,
+        description: createTaskDto.description,
+        status: createTaskDto.status,
+        priority: createTaskDto.priority,
+        label: createTaskDto.label,
+        project,
+        createdBy,
+        assignees,
+      };
+
+      const response = await this.taskRepository.createTask(task);
+      console.log({ response, assignees });
+      if (response && assignees) {
+        await this.emailService.sendEmailToAssignees(
+          assignees.email,
+          assignees.name,
+          task.title,
+          project.owner.name,
+        );
+      }
+      return response;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findAll(offset: number) {
@@ -67,22 +88,37 @@ export class TaskService {
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto) {
-    const project = await this.projectRepository.findProjectById(
-      updateTaskDto.projectId,
-    );
-    const assignees = await this.userRepository.findById(
-      updateTaskDto.assignees,
-    );
-    const task = {
-      title: updateTaskDto.title,
-      description: updateTaskDto.description,
-      status: updateTaskDto.status,
-      priority: updateTaskDto.priority,
-      label: updateTaskDto.label,
-      project,
-      assignees,
-    };
-    return await this.taskRepository.updateTask(id, task);
+    try {
+      const project = await this.projectRepository.findProjectById(
+        updateTaskDto.projectId,
+      );
+      const assignees = await this.userRepository.findById(
+        updateTaskDto.assignees,
+      );
+      const task = {
+        title: updateTaskDto.title,
+        description: updateTaskDto.description,
+        status: updateTaskDto.status,
+        priority: updateTaskDto.priority,
+        label: updateTaskDto.label,
+        project,
+        assignees,
+      };
+      const response = await this.taskRepository.updateTask(id, task);
+      console.log({ response, assignees });
+      if (response && assignees) {
+        await this.emailService.sendEmailToAssignees(
+          assignees.email,
+          assignees.name,
+          task.title,
+          project.owner.name,
+        );
+      }
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async remove(id: string) {
