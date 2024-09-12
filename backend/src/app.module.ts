@@ -10,6 +10,7 @@ import { TaskModule } from './presentation/task/task.module';
 import {FirebaseAdminModule} from './firebase-admin.module';
 import { Project } from './domain/entities/project.entity';
 import { ProjectModule } from './presentation/project/project.module';
+import { UserModule } from './presentation/user/user.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { ProjectModule } from './presentation/project/project.module';
     AuthModule,
     ProjectModule,
     TaskModule,
+    UserModule
   ],
 })
 export class AppModule {}
