@@ -51,6 +51,17 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchData();
+    //memastikan bahwa service worker dan firebase initialization berjalan di client
+    if (typeof window !== "undefined") {
+      (async () => {
+        const { registerServiceWorker } = await import(
+          "@/lib/register-service-worker"
+        );
+        const { requestPermission } = await import("@/lib/get-fcm-token");
+        registerServiceWorker();
+        requestPermission();
+      })();
+    }
   }, [fetchData]);
 
   return (
