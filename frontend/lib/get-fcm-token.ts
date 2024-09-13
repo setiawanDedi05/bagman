@@ -1,4 +1,4 @@
-import { messaging } from "./firebaseConfig";
+import { messaging } from "./firebase-config";
 import { getToken } from "firebase/messaging";
 
 const VAPID_KEY = process.env.NEXT_PUBLIC_VAPID_KEY;
@@ -15,7 +15,7 @@ export const requestPermission = async () => {
   }
 };
 
-const getFCMToken = async () => {
+export const getFCMToken = async () => {
   try {
     const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
     if (currentToken) {

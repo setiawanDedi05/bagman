@@ -11,10 +11,9 @@ import { Separator } from "@/components/ui/separator";
 import { ModeToggle } from "@/components/ui/toggle-theme";
 import { UserNav } from "@/components/ui/user-nav";
 import { cn } from "@/lib/utils";
-import { requestFCMToken } from "@/services/firebase";
 import { LayoutDashboard, LucidePaperclip, ProjectorIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 
 const defaultLayout = [20, 32, 48];
 
@@ -25,10 +24,6 @@ export default function ProtectedPage({
 }>) {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const pathname = usePathname().split("/")[2];
-
-  useEffect(() => {
-    requestFCMToken();
-  }, []);
 
   return (
     <section className="w-full">
