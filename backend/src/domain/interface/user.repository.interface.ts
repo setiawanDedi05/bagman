@@ -8,4 +8,5 @@ export interface IUserRepository {
   findById(id: string): Promise<User>;
   findAll(username?: string): Promise<User[]>;
   update(user: User): Promise<any>;
+  updateFcmToken(id:string, token:string): Promise<void>;
 }
