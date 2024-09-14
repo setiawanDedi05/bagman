@@ -12,6 +12,7 @@ import { RecentTask } from "./components/recent-task";
 import { dashboardService } from "@/services/dashboard/dashboard-service";
 import { useCallback, useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth-store";
+import { userService } from "@/services/user/user-service";
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
@@ -59,7 +60,8 @@ export default function DashboardPage() {
         );
         const { requestPermission } = await import("@/lib/get-fcm-token");
         registerServiceWorker();
-        requestPermission();
+        const token = await requestPermission();
+        await userService.updateFcmToken(user?.id!, token || "");
       })();
     }
   }, [fetchData]);

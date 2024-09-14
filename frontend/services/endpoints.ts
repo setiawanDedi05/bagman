@@ -6,7 +6,8 @@ export const endpoint = {
         verifyEmail: '/api/auth/verify-email'
     },
     user: {
-        parent: '/api/user'
+        parent: '/api/user',
+        updateFcmToken: '/api/user/fcm-token-update'
     },
     projects: {
         fetchAll: '/api/projects',
