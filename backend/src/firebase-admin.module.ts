@@ -1,24 +1,20 @@
 import { Global, Module } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import { ConfigService } from '@nestjs/config';
 
 @Global()
 @Module({
   providers: [
     {
       provide: 'FIREBASE_ADMIN',
-      useFactory: (configService: ConfigService) => {
+      useFactory: () => {
         return admin.initializeApp({
           credential: admin.credential.cert({
-            projectId: configService.get<string>('FIREBASE_PROJECT_ID'),
-            privateKey: configService
-              .get<string>('FIREBASE_PRIVATE_KEY')
-              .replace(/\\n/g, '\n'),
-            clientEmail: configService.get<string>('FIREBASE_CLIENT_EMAIL'),
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
           }),
         });
       },
-      inject: [ConfigService],
     },
   ],
   exports: ['FIREBASE_ADMIN'],

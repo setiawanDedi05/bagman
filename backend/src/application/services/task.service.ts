@@ -38,15 +38,18 @@ export class TaskService {
         createdBy,
         assignees,
       };
-
       const response = await this.taskRepository.createTask(task);
-      console.log({ response, assignees });
       if (response && assignees) {
         await this.emailService.sendEmailToAssignees(
           assignees.email,
           assignees.name,
           task.title,
           project.owner.name,
+        );
+        await this.notificationService.sendPushNotification(
+          assignees.fcmToken,
+          'New Task Assign to you',
+          `I would like to inform you that a new task titled ${task.title} has been assigned to you by ${project.owner.name}.`,
         );
       }
       return response;
@@ -112,6 +115,11 @@ export class TaskService {
           assignees.name,
           task.title,
           project.owner.name,
+        );
+        await this.notificationService.sendPushNotification(
+          assignees.fcmToken,
+          'New Task Assign to you',
+          `I would like to inform you that a new task titled ${task.title} has been assigned to you by ${project.owner.name}.`,
         );
       }
 
