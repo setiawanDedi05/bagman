@@ -13,6 +13,7 @@ import { dashboardService } from "@/services/dashboard/dashboard-service";
 import { useCallback, useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth-store";
 import { userService } from "@/services/user/user-service";
+import { fetchToken } from "@/firebase";
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
@@ -53,14 +54,24 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchData();
     //memastikan bahwa service worker dan firebase initialization berjalan di client
+    // if (typeof window !== "undefined") {
+    //   (async () => {
+    //     const { registerServiceWorker } = await import(
+    //       "@/lib/register-service-worker"
+    //     );
+    //     const { requestPermission } = await import("@/lib/get-fcm-token");
+    //     registerServiceWorker();
+    //     const token = await requestPermission();
+    //     await userService.updateFcmToken(user?.id!, token || "");
+    //   })();
+    // }
     if (typeof window !== "undefined") {
       (async () => {
         const { registerServiceWorker } = await import(
-          "@/lib/register-service-worker"
-        );
-        const { requestPermission } = await import("@/lib/get-fcm-token");
+                "@/lib/register-service-worker"
+              );
         registerServiceWorker();
-        const token = await requestPermission();
+        const token = await fetchToken();
         await userService.updateFcmToken(user?.id!, token || "");
       })();
     }
