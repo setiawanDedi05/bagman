@@ -1,4 +1,4 @@
-import { firebaseConfig } from "./firebase-config";
+// import { firebaseConfig } from "./firebase-config";
 
 export const registerServiceWorker = () => {
   if (typeof window !== "undefined" && "serviceWorker" in navigator) {
@@ -10,9 +10,9 @@ export const registerServiceWorker = () => {
           registration.scope
         );
 
-        registration.active?.postMessage({
-          firebaseConfig: { ...firebaseConfig },
-        });
+        // registration.active?.postMessage({
+        //   firebaseConfig: { ...firebaseConfig },
+        // });
       })
       .catch((error) => {
         console.error("Service Worker registration failed:", error);
