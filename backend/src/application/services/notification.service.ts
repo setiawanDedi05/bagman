@@ -22,12 +22,8 @@ export class NotificationService {
       token,
     };
 
-    console.log({ message });
-
     try {
-      const response = await this.firebaseAdmin.messaging().send(message);
-      console.log({ response });
-      console.log('Push Notification sent Successfully');
+      await this.firebaseAdmin.messaging().send(message);
     } catch (error) {
       throw error;
     }
