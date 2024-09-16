@@ -48,7 +48,6 @@ function RegisterForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const response = await authService.register(values);
-      console.log({ response });
       if (response.status === 201) {
         toast({
           title: "Registration Success",
