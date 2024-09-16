@@ -108,7 +108,6 @@ export class TaskService {
         assignees,
       };
       const response = await this.taskRepository.updateTask(id, task);
-      console.log({ response, assignees });
       if (response && assignees) {
         await this.emailService.sendEmailToAssignees(
           assignees.email,
