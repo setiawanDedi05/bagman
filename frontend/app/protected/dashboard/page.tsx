@@ -67,15 +67,11 @@ export default function DashboardPage() {
     // }
     if (typeof window !== "undefined") {
       (async () => {
-        const { registerServiceWorker } = await import(
-                "@/lib/register-service-worker"
-              );
-        registerServiceWorker();
-        const token = await fetchToken();
-        await userService.updateFcmToken(user?.id!, token || "");
+        const newToken = await fetchToken();
+        await userService.updateFcmToken(user?.id!, newToken || "");
       })();
     }
-  }, [fetchData]);
+  }, [fetchData, user]);
 
   return (
     <div className="w-full grid gap-4 grid-cols-1 md:grid-cols-2">
