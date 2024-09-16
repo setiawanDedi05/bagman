@@ -26,7 +26,6 @@ export const fetchToken = async () => {
       const token = await getToken(fcmMessaging, {
         vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
       });
-      console.log({token});
       
       return token;
     }

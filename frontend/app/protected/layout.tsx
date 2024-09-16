@@ -9,11 +9,12 @@ import {
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 import { ModeToggle } from "@/components/ui/toggle-theme";
+import { toast } from "@/components/ui/use-toast";
 import { UserNav } from "@/components/ui/user-nav";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard, LucidePaperclip, ProjectorIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 const defaultLayout = [20, 32, 48];
 
@@ -24,6 +25,22 @@ export default function ProtectedPage({
 }>) {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const pathname = usePathname().split("/")[2];
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.addEventListener("message", (event) => {
+          if (event.data) {
+            const { notification } = event.data;
+            toast({
+              title: notification.title,
+              description: notification.body,
+            });
+          }
+        });
+      }
+    }
+  }, []);
 
   return (
     <section className="w-full">

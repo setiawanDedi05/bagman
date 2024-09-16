@@ -40,7 +40,7 @@ export class ProjectRepository implements IProjectRepository {
       });
       return await this.findProjectById(id);
     } catch (error) {
-      console.log({ error });
+      throw error;
     }
   }
 
