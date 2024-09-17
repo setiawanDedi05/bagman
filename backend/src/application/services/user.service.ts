@@ -8,4 +8,7 @@ export class UserService {
   async findAll(username?: string) {
     return await this.userRepository.findAll(username);
   }
+  async updateFcmToken(id: string, token: string) {
+    await this.userRepository.updateFcmToken(id, token);
+  }
 }

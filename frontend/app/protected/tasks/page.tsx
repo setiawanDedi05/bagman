@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { Task, columns } from "./columns";
 import { DataTable } from "./data-table";
 import { tasksService } from "@/services/tasks/tasks-service";
@@ -27,14 +27,16 @@ export default function TasksPage() {
   }, [page, fetchData]);
 
   return (
-    <div className="container mx-auto py-10">
-      <DataTable
-        columns={columns}
-        data={tasks}
-        total={totalTasks}
-        setTasks={setTasks}
-        setTotal={setTotalTasks}
-      />
-    </div>
+    <Suspense fallback={<div>loading</div>}>
+      <div className="container mx-auto py-10">
+        <DataTable
+          columns={columns}
+          data={tasks}
+          total={totalTasks}
+          setTasks={setTasks}
+          setTotal={setTotalTasks}
+        />
+      </div>
+    </Suspense>
   );
 }

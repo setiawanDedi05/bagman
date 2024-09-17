@@ -32,11 +32,14 @@ export class UserRepository implements IUserRepository {
       },
       take: 10,
     });
-    console.log({ response });
     return response;
   }
 
   async findById(id: string): Promise<User> {
     return await this.userRepository.findOneBy({ id });
+  }
+
+  async updateFcmToken(id: string, token: string): Promise<void> {
+    await this.userRepository.update(id, { fcmToken: token });
   }
 }
