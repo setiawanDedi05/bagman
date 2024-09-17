@@ -3,7 +3,6 @@ importScripts(
   "https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"
 );
 
-// Replace these with your own Firebase config keys...
 const firebaseConfig = {
   apiKey: "AIzaSyA6-XJFR475jESZA6gZKWvcFh4UToS1Rig",
   authDomain: "bagman-05.firebaseapp.com",
@@ -25,8 +24,6 @@ messaging.onBackgroundMessage((payload) => {
     payload
   );
 
-  // payload.fcmOptions?.link comes from our backend API route handle
-  // payload.data.link comes from the Firebase Console where link is the 'key'
   const link = payload.fcmOptions?.link || payload.data?.link;
 
   const notificationTitle = payload.notification.title;

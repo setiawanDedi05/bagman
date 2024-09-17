@@ -49,7 +49,7 @@ export class TaskService {
         await this.notificationService.sendPushNotification(
           assignees.fcmToken,
           'New Task Assign to you',
-          `I would like to inform you that a new task titled ${task.title} has been assigned to you by ${project.owner.name}.`,
+          `I would like to inform you that a new task titled ${task.title} has been assigned to you by ${project.owner.name || project.owner.username}.`,
         );
       }
       return response;
