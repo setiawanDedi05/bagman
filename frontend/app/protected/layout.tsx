@@ -25,7 +25,6 @@ export default function ProtectedPage({
 }>) {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const pathname = usePathname().split("/")[2];
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (navigator.serviceWorker) {
@@ -41,7 +40,7 @@ export default function ProtectedPage({
       }
     }
   }, []);
-
+    
   return (
     <section className="w-full">
       <div className="flex flex-col">
