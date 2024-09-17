@@ -10,10 +10,11 @@ import {
 import { ProjectorIcon } from "lucide-react";
 import { RecentTask } from "./components/recent-task";
 import { dashboardService } from "@/services/dashboard/dashboard-service";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth-store";
 import { userService } from "@/services/user/user-service";
-import { fetchToken } from "@/firebase";
+import { getNotificationPermissionAndToken } from "@/lib/utils";
+import LoaderDashboard from "./components/loader-dashboard";
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
@@ -53,82 +54,74 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchData();
-    //memastikan bahwa service worker dan firebase initialization berjalan di client
-    // if (typeof window !== "undefined") {
-    //   (async () => {
-    //     const { registerServiceWorker } = await import(
-    //       "@/lib/register-service-worker"
-    //     );
-    //     const { requestPermission } = await import("@/lib/get-fcm-token");
-    //     registerServiceWorker();
-    //     const token = await requestPermission();
-    //     await userService.updateFcmToken(user?.id!, token || "");
-    //   })();
-    // }
     if (typeof window !== "undefined") {
       (async () => {
-        const newToken = await fetchToken();
+        const newToken = await getNotificationPermissionAndToken();
         await userService.updateFcmToken(user?.id!, newToken || "");
       })();
     }
   }, [fetchData, user]);
 
   return (
-    <div className="w-full grid gap-4 grid-cols-1 md:grid-cols-2">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">All Projects</CardTitle>
-          <ProjectorIcon />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{projects.length}</div>
-          <p className="text-xs text-muted-foreground">projects</p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Onprogress Tasks
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{totalMyTask.onprogress}</div>
-          <p className="text-xs text-muted-foreground">tasks</p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Tasks</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">
-            {totalMyTask.backlog + totalMyTask.done + totalMyTask.onprogress}
-          </div>
-          <p className="text-xs text-muted-foreground">tasks asigned to you</p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Backlog Task</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{totalMyTask.backlog}</div>
-          <p className="text-xs text-muted-foreground">
-            Backlog tasks asigned to you
-          </p>
-        </CardContent>
-      </Card>
-      <Card className="md:col-span-2">
-        <CardHeader>
-          <CardTitle>Recent Task</CardTitle>
-          <CardDescription>
-            You done {totalTaskThisMonth} tasks this month.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <RecentTask tasks={recenTask} />
-        </CardContent>
-      </Card>
-    </div>
+    <Suspense fallback={<LoaderDashboard />}>
+      <div className="w-full grid gap-4 grid-cols-1 md:grid-cols-2">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">All Projects</CardTitle>
+            <ProjectorIcon />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{projects.length}</div>
+            <p className="text-xs text-muted-foreground">projects</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Onprogress Tasks
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalMyTask.onprogress}</div>
+            <p className="text-xs text-muted-foreground">tasks</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tasks</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {totalMyTask.backlog + totalMyTask.done + totalMyTask.onprogress}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              tasks asigned to you
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Backlog Task</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalMyTask.backlog}</div>
+            <p className="text-xs text-muted-foreground">
+              Backlog tasks asigned to you
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle>Recent Task</CardTitle>
+            <CardDescription>
+              You done {totalTaskThisMonth} tasks this month.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RecentTask tasks={recenTask} />
+          </CardContent>
+        </Card>
+      </div>
+    </Suspense>
   );
 }
