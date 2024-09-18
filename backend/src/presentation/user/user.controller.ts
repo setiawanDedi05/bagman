@@ -22,5 +22,4 @@ export class UserController {
   async updateFcmToken(@Body() data: {id:string, token: string}){
     this.userService.updateFcmToken(data.id, data.token);
   }
-
 }
