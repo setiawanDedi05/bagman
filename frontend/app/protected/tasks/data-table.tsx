@@ -81,7 +81,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex justify-between items-center py-4">
+      <div className="flex justify-between items-center py-4 gap-5">
         <Input
           placeholder="Filter title..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -91,8 +91,8 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
         <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger className="w-[10em]">
-            <Button>Create</Button>
+          <SheetTrigger className="self-end">
+            <Button variant="outline">Create</Button>
           </SheetTrigger>
           <SheetContent side="bottom" className="h-[70%] overflow-scroll">
             <SheetHeader>
