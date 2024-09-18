@@ -22,6 +22,7 @@ import { projectsService } from "@/services/projects/projects-service";
 import { ProjectDTO } from "@/services/dto/project-dto";
 import { Owner } from "./components/owner";
 import { useRouter } from "next/navigation";
+import LoaderProject from "./components/loader-project";
 
 export default function ProjectPage() {
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
@@ -49,7 +50,7 @@ export default function ProjectPage() {
   );
 
   return (
-    <Suspense fallback={<div>loading</div>}>
+    <Suspense fallback={<LoaderProject />}>
       <div className="flex flex-col w-full gap-5">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger className="self-end">

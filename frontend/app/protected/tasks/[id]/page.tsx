@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
@@ -54,6 +54,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import LoaderTaskDetail from "./components/loader-task-detail";
+import SlowComponent from "@/components/ui/slow-component";
 
 interface DetailTaskProps {
   params: {
@@ -105,151 +107,159 @@ export default function DetailTask({ params }: DetailTaskProps) {
   }, [id, router]);
 
   return (
-    <Card className="w-full border-none">
-      <CardHeader>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/components">
-                {task?.project?.title}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator>/</BreadcrumbSeparator>
-            <BreadcrumbItem>
-              <BreadcrumbPage>{task?.id}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+    <Suspense fallback={<LoaderTaskDetail />}>
+      <Card className="w-full border-none">
+        <CardHeader>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/components">
+                  {task?.project?.title}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>/</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbPage>{task?.id}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
 
-        <CardTitle className="flex justify-between items-center">
-          <div className="flex flex-col">
-            <span className="uppercase mb-2">{task?.title}</span>
-            <div className="flex gap-2">
-              <Badge variant="outline">
-                <span className="capitalize">{task?.status}</span>
-              </Badge>
+          <CardTitle className="flex justify-between items-center">
+            <div className="flex flex-col">
+              <span className="uppercase mb-2">{task?.title}</span>
+              <div className="flex gap-2">
+                <Badge variant="outline">
+                  <span className="capitalize">{task?.status}</span>
+                </Badge>
+              </div>
             </div>
-          </div>
-          <div className="flex gap-5">
-            <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger className="self-end">
-                <Button variant="outline">Edit</Button>
-              </SheetTrigger>
-              <SheetContent side="bottom" className="h-[70%] overflow-scroll">
-                <SheetHeader>
-                  <SheetTitle>Edit Task {task?.title}</SheetTitle>
-                  <SheetDescription>
-                    Bring Your Ideas to Life: Start Your Task Today!
-                  </SheetDescription>
-                </SheetHeader>
-                <EditTaskForm setTask={setTask} setOpen={setOpen} task={task} />
-              </SheetContent>
-            </Sheet>
-            <AlertDialog>
-              <AlertDialogTrigger>
-                <Button variant="destructive">Delete</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will delete your Task
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={onDelete}>
-                    Continue
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </CardTitle>
-        <CardDescription>
-          {formatDistanceToNow(
-            new Date(task?.createdAt! || new Date().toLocaleString()),
-            {
-              addSuffix: true,
-            }
-          )}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Details</AccordionTrigger>
-            <AccordionContent>
-              <div className="w-[20%] flex flex-col gap-5">
-                <div className="flex justify-between">
-                  <span>Type</span>
-                  <Badge variant={mapperLabelBadge(task?.label)}>
-                    <span className="capitalize">{task?.label}</span>
-                  </Badge>
+            <div className="flex gap-5">
+              <Sheet open={open} onOpenChange={setOpen}>
+                <SheetTrigger className="self-end">
+                  <Button variant="outline">Edit</Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="h-[70%] overflow-scroll">
+                  <SheetHeader>
+                    <SheetTitle>Edit Task {task?.title}</SheetTitle>
+                    <SheetDescription>
+                      Bring Your Ideas to Life: Start Your Task Today!
+                    </SheetDescription>
+                  </SheetHeader>
+                  <EditTaskForm
+                    setTask={setTask}
+                    setOpen={setOpen}
+                    task={task}
+                  />
+                </SheetContent>
+              </Sheet>
+              <AlertDialog>
+                <AlertDialogTrigger>
+                  <Button variant="destructive">Delete</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will delete your Task
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={onDelete}>
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </CardTitle>
+          <CardDescription>
+            {formatDistanceToNow(
+              new Date(task?.createdAt! || new Date().toLocaleString()),
+              {
+                addSuffix: true,
+              }
+            )}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Details</AccordionTrigger>
+              <AccordionContent>
+                <div className="w-[20%] flex flex-col gap-5">
+                  <div className="flex justify-between">
+                    <span>Type</span>
+                    <Badge variant={mapperLabelBadge(task?.label)}>
+                      <span className="capitalize">{task?.label}</span>
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Priority</span>
+                    <Badge variant={mapperPriorityBadge(task?.priority)}>
+                      <span className="capitalize">{task?.priority}</span>
+                    </Badge>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Priority</span>
-                  <Badge variant={mapperPriorityBadge(task?.priority)}>
-                    <span className="capitalize">{task?.priority}</span>
-                  </Badge>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Peoples</AccordionTrigger>
+              <AccordionContent>
+                <div className="w-[20%] flex flex-col gap-5">
+                  <div className="flex justify-between">
+                    <span>Reporter</span>
+                    <span>{task?.project?.owner.username}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Assignee</span>
+                    <span>{task?.assignees?.username}</span>
+                  </div>
                 </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Peoples</AccordionTrigger>
-            <AccordionContent>
-              <div className="w-[20%] flex flex-col gap-5">
-                <div className="flex justify-between">
-                  <span>Reporter</span>
-                  <span>{task?.project?.owner.username}</span>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Descriptions</AccordionTrigger>
+              <AccordionContent>
+                <h3 className="mb-10 text-sm">
+                  {parse(task?.description || "")}
+                </h3>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Dates</AccordionTrigger>
+              <AccordionContent>
+                <div className="w-[30%] flex flex-col gap-5">
+                  <div className="flex justify-between">
+                    <span>Created</span>
+                    <span>{task?.createdAt}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Updated</span>
+                    <span>{task?.updatedAt}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Assignee</span>
-                  <span>{task?.assignees?.username}</span>
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Descriptions</AccordionTrigger>
-            <AccordionContent>
-              <h3 className="mb-10 text-sm">
-                {parse(task?.description || "")}
-              </h3>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Dates</AccordionTrigger>
-            <AccordionContent>
-              <div className="w-[30%] flex flex-col gap-5">
-                <div className="flex justify-between">
-                  <span>Created</span>
-                  <span>{task?.createdAt}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Updated</span>
-                  <span>{task?.updatedAt}</span>
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Activity</AccordionTrigger>
-            <AccordionContent>
-              <Feedback />
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </CardContent>
-    </Card>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>Activity</AccordionTrigger>
+              <AccordionContent>
+                <Feedback />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </CardContent>
+      </Card>
+    </Suspense>
   );
 }

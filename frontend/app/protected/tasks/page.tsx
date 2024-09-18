@@ -5,6 +5,7 @@ import { Task, columns } from "./columns";
 import { DataTable } from "./data-table";
 import { tasksService } from "@/services/tasks/tasks-service";
 import { useSearchParams } from "next/navigation";
+import LoaderTask from "./components/loader-task";
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -27,7 +28,7 @@ export default function TasksPage() {
   }, [page, fetchData]);
 
   return (
-    <Suspense fallback={<div>loading</div>}>
+    <Suspense fallback={<LoaderTask />}>
       <div className="container mx-auto py-10">
         <DataTable
           columns={columns}
