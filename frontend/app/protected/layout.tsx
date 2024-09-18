@@ -40,7 +40,6 @@ export default function ProtectedPage({
       }
     }
   }, []);
-    
   return (
     <section className="w-full">
       <div className="flex flex-col">

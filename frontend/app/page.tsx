@@ -3,10 +3,11 @@ import React, { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginPage from "./components/login-form";
 import RegisterPage from "./components/register-form";
+import LoaderMain from "./components/loader-main";
 
 const HomePage = () => {
   return (
-    <Suspense fallback={<div>loading</div>}>
+    <Suspense fallback={<LoaderMain />}>
       <div className="text-center p-[50px] flex flex-col lg:flex-row lg:justify-around lg:align-middle">
         <div className="w-full lg:w-[50%] flex flex-col justify-center align-middle">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
