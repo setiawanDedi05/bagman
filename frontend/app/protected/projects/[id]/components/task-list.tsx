@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -79,6 +80,11 @@ export default function TaskList({ tasks = [] }: TaskListProps) {
             <CardContent>
               {parse(item.description.substring(0, 300))}
             </CardContent>
+            <CardFooter className="underline text-xs text-mute">
+              {!item.assignees
+                ? "has not been assigned to anyone yet"
+                : `Assign to ${item.assignees.name}`}
+            </CardFooter>
           </Card>
         ))}
       </div>

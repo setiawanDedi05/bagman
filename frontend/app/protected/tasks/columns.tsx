@@ -1,19 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { labels, priorities, statuses } from "./utils/mapper";
 import { Badge } from "@/components/ui/badge";
 import {
+  AssignToMeRequest,
   LabelTaskEnum,
   PriorityTaskEnum,
   StatusTaskEnum,
@@ -21,6 +14,10 @@ import {
 import { ProjectDTO } from "@/services/dto/project-dto";
 import Link from "next/link";
 import { User } from "@/services/dto/user";
+import { tasksService } from "@/services/tasks/tasks-service";
+import { toast } from "@/components/ui/use-toast";
+import { useAuthStore } from "@/store/auth-store";
+import { useLoadingStore } from "@/store/loading-store";
 
 export type Task = {
   id: string;
@@ -37,12 +34,71 @@ export type Task = {
 
 export const columns: ColumnDef<Task>[] = [
   {
+    accessorKey: "project.title",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() =>
+            column.toggleSorting(column.getIsSorted() === "asc", true)
+          }
+        >
+          Project
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <Link href={`/protected/projects/${row.original.project?.id}`}>
+          <div className="flex space-x-2">
+            <span className="max-w-[500px] truncate font-medium underline text-blue-500 hover:no-underline hover:text-black">
+              {row.original.project?.title}
+            </span>
+          </div>
+        </Link>
+      );
+    },
+  },
+  {
+    accessorKey: "title",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() =>
+            column.toggleSorting(column.getIsSorted() === "asc", true)
+          }
+        >
+          Summary
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+
+      return (
+        <Link href={`/protected/tasks/${row.original.id}`}>
+          <div className="flex space-x-2">
+            {label && <Badge variant="outline">{label.label}</Badge>}
+            <span className="max-w-[500px] truncate font-medium underline text-blue-500 hover:no-underline hover:text-black">
+              {row.getValue("title")}
+            </span>
+          </div>
+        </Link>
+      );
+    },
+  },
+  {
     accessorKey: "priority",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() =>
+            column.toggleSorting(column.getIsSorted() === "asc", true)
+          }
         >
           Priority
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -77,7 +133,9 @@ export const columns: ColumnDef<Task>[] = [
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() =>
+            column.toggleSorting(column.getIsSorted() === "asc", true)
+          }
         >
           Status
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -104,27 +162,26 @@ export const columns: ColumnDef<Task>[] = [
     },
   },
   {
-    accessorKey: "title",
+    accessorKey: "assignees.name",
     header: ({ column }) => {
+      console.log({ column });
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() =>
+            column.toggleSorting(column.getIsSorted() === "asc", true)
+          }
         >
-          Summary
+          Assignee
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
-
+      const task = row.original;
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("title")}
-          </span>
+        <div className="flex gap-5">
+          {!task.assignees ? "not been assigned" : task.assignees.name}
         </div>
       );
     },
@@ -133,30 +190,44 @@ export const columns: ColumnDef<Task>[] = [
     id: "actions",
     cell: ({ row }) => {
       const task = row.original;
+      const { user } = useAuthStore();
+      const { loading } = useLoadingStore();
+      async function assignToMe() {
+        const requestData: AssignToMeRequest = {
+          assignees: user?.id!,
+        };
+
+        try {
+          const response = await tasksService.assignToMe(requestData, task.id);
+          if (response.status === 200) {
+            toast({
+              title: "The Task Assign To You",
+              description: "Keep on track",
+            });
+          } else {
+            toast({
+              variant: "destructive",
+              title: "The Task Not Assign To You",
+              description: "You can try later",
+            });
+          }
+        } catch (error: any) {
+          toast({
+            variant: "destructive",
+            title: "The Task Not Assign To You",
+            description: error.message,
+          });
+        }
+      }
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
+        <div className="flex gap-5">
+          {!task.assignees && (
+            <Button onClick={assignToMe} disabled={loading}>
+              Assign To Me
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(task.id)}
-            >
-              Copy Task ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href={`/protected/tasks/${task.id}`}>
-                View Task details
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          )}
+        </div>
       );
     },
   },

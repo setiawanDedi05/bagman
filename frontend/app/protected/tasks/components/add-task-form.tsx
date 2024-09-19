@@ -54,21 +54,18 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import SelectPeople from "./select-people";
-import { Trash2Icon } from "lucide-react";
 import ClearAssignee from "./clear-assignee";
 
 const formSchema = z.object({
   title: z.string().min(2, {
     message: "username must be at least 2 characters.",
   }),
-  description: z.string().min(6, {
-    message: "password must be at least 6 charachters.",
-  }),
+  description: z.string().optional(),
   status: z.nativeEnum(StatusTaskEnum),
   label: z.nativeEnum(LabelTaskEnum),
   priority: z.nativeEnum(PriorityTaskEnum),
   projectId: z.string(),
-  assignees: z.string(),
+  assignees: z.string().optional(),
 });
 
 interface AddTaskFormProps {

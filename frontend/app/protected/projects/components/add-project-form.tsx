@@ -24,9 +24,7 @@ const formSchema = z.object({
   title: z.string().min(2, {
     message: "username must be at least 2 characters.",
   }),
-  description: z.string().min(6, {
-    message: "password must be at least 6 charachters.",
-  }),
+  description: z.string().optional(),
   key: z.string().max(3, {
     message: "key must be 3 or less",
   }),

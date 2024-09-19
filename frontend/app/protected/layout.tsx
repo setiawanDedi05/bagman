@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { LayoutDashboard, LucidePaperclip, ProjectorIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { ProgressLoader } from "nextjs-progressloader";
 
 const defaultLayout = [20, 32, 48];
 
@@ -42,6 +43,7 @@ export default function ProtectedPage({
   }, []);
   return (
     <section className="w-full">
+      <ProgressLoader />
       <div className="flex flex-col">
         <div className="border-b">
           <div className="flex h-16 items-center px-4">
