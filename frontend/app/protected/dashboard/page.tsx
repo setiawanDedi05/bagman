@@ -36,7 +36,7 @@ export default function DashboardPage() {
           dashboardService.getTotalTask(user?.id!, "done"),
           dashboardService.allProject(),
           dashboardService.getRecentTask(user?.id!),
-          dashboardService.countThisMont(),
+          dashboardService.countThisMont(user?.id!),
         ]);
 
       setTotalMyTask({

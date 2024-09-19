@@ -8,7 +8,7 @@ export const dashboardService = {
 
   getTotalTask: async (id: string, status: string) => {
     return await api.get(
-      `${endpoint.tasks.fetchTaskMine}?assignes=${id}&status=${status}`
+      `${endpoint.tasks.fetchTaskMine}?assignees=${id}&status=${status}`
     );
   },
 
@@ -16,7 +16,7 @@ export const dashboardService = {
     return await api.get(`${endpoint.tasks.recenTask}/${id}`);
   },
 
-  countThisMont: async () => {
-    return await api.get(endpoint.tasks.countThisMonth);
-  }
+  countThisMont: async (id: string) => {
+    return await api.get(`${endpoint.tasks.countThisMonth}/${id}`);
+  },
 };
