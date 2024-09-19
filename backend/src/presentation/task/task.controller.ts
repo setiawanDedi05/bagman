@@ -31,9 +31,9 @@ export class TaskController {
     return this.taskService.findAll(offset);
   }
 
-  @Get('/count-this-month')
-  async countTasksThisMonth(): Promise<number> {
-    return await this.taskService.countTasksThisMonth();
+  @Get('/count-this-month/:id')
+  async countTasksThisMonth(@Param('id') id: string): Promise<number> {
+    return await this.taskService.countTasksThisMonth(id);
   }
 
   @Get('search')
@@ -57,6 +57,16 @@ export class TaskController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return this.taskService.update(id, updateTaskDto);
+  }
+
+  @Patch('assign-to-me/:id')
+  assignToMe(@Param('id') id: string, @Body() UpdateTaskDto: UpdateTaskDto) {
+    return this.taskService.assignToMe(id, UpdateTaskDto);
+  }
+
+  @Patch('change-status/:id')
+  changeStatus(@Param('id') id: string, @Body() UpdateTaskDto: UpdateTaskDto) {
+    return this.taskService.changeStatus(id, UpdateTaskDto);
   }
 
   @Delete(':id')

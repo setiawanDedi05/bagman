@@ -17,8 +17,8 @@ export class ProjectRepository implements IProjectRepository {
 
   async findProjectById(id: string): Promise<Project | undefined> {
     return await this.projectRepository.findOne({
-      where: { id, isDelete: false },
-      relations: ['tasks', 'owner'],
+      where: { id, isDelete: false, tasks: { isDelete: false } },
+      relations: ['tasks', 'tasks.assignees', 'owner'],
     });
   }
 
