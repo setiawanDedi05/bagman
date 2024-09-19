@@ -17,6 +17,8 @@ export const endpoint = {
         parent: "/api/tasks",
         fetchTaskMine: '/api/tasks/search',
         recenTask: '/api/tasks/recent-task',
-        countThisMonth: '/api/tasks/count-this-month'
+        countThisMonth: '/api/tasks/count-this-month',
+        assignToMe: "/api/tasks/assign-to-me",
+        changeStatus: "/api/tasks/change-status",
     }
 }
