@@ -7,14 +7,17 @@ import {
   Post,
   Query,
   Res,
+  UseFilters,
 } from '@nestjs/common';
 import { AuthService } from 'src/application/services/auth.service';
 import { RegisterDto } from '../../application/dto/auth/register.dto';
 import { LoginDto } from '../../application/dto/auth/login.dto';
 import { Response } from 'express';
 import { EmailService } from 'src/application/services/email.service';
+import { QueryExceptionFilter } from 'src/common/filters/query-exception.filter';
 
 @Controller('auth')
+@UseFilters(QueryExceptionFilter)
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
