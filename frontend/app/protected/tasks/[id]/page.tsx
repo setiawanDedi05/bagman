@@ -56,6 +56,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import LoaderTaskDetail from "./components/loader-task-detail";
 import { StatusTaskEnum } from "@/services/dto/task-dto";
+import { useLoadingStore } from "@/store/loading-store";
 
 interface DetailTaskProps {
   params: {
@@ -64,17 +65,20 @@ interface DetailTaskProps {
 }
 export default function DetailTask({ params }: DetailTaskProps) {
   const { id } = params;
+  const { showLoading, hideLoading } = useLoadingStore();
   const [task, setTask] = useState<Task>();
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const fetchData = useCallback(async () => {
+    showLoading();
     try {
       const response = await tasksService.detailTask(id);
       setTask(response.data);
     } catch (error) {
       throw error;
     }
+    hideLoading();
   }, [id]);
 
   useEffect(() => {
@@ -82,6 +86,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
   }, [fetchData]);
 
   const onDelete = useCallback(async () => {
+    showLoading();
     try {
       const response = await tasksService.deleteTask(id);
       if (response.status === 200) {
@@ -104,19 +109,25 @@ export default function DetailTask({ params }: DetailTaskProps) {
         description: error.message,
       });
     }
+    hideLoading();
   }, [id, router]);
 
-  const handleChangeStatus = useCallback(async (status: string) => {
-    try {
-      await tasksService.changeStatus({ status }, id);
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Change Status Failed",
-        description: error.message,
-      });
-    }
-  }, []);
+  const handleChangeStatus = useCallback(
+    async (status: string) => {
+      showLoading();
+      try {
+        await tasksService.changeStatus({ status }, id);
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: "Change Status Failed",
+          description: error.message,
+        });
+      }
+      hideLoading();
+    },
+    [id]
+  );
 
   return (
     <Suspense fallback={<LoaderTaskDetail />}>
@@ -150,10 +161,22 @@ export default function DetailTask({ params }: DetailTaskProps) {
               </div>
               <div className="flex gap-5">
                 {task.status === StatusTaskEnum.BACKLOG && (
-                  <Button variant="default" onClick={() => handleChangeStatus(StatusTaskEnum.ONPROGRESS)}>On Progress</Button>
+                  <Button
+                    variant="default"
+                    onClick={() =>
+                      handleChangeStatus(StatusTaskEnum.ONPROGRESS)
+                    }
+                  >
+                    On Progress
+                  </Button>
                 )}
                 {task.status === StatusTaskEnum.ONPROGRESS && (
-                  <Button variant="default" onClick={() => handleChangeStatus(StatusTaskEnum.DONE)}>Done</Button>
+                  <Button
+                    variant="default"
+                    onClick={() => handleChangeStatus(StatusTaskEnum.DONE)}
+                  >
+                    Done
+                  </Button>
                 )}
                 <Sheet open={open} onOpenChange={setOpen}>
                   <SheetTrigger className="self-end">

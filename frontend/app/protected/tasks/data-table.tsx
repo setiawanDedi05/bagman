@@ -42,6 +42,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -170,7 +171,10 @@ export function DataTable<TData, TValue>({
               </PaginationItem>
               {Array.from({ length: Math.ceil(total / 10) }, (_, index) => (
                 <PaginationItem key={`pagination-item-${index}`}>
-                  <PaginationLink href={`?page=${index + 1}`}>
+                  <PaginationLink
+                    href={`?page=${index + 1}`}
+                    className={cn(parseInt(page!) === index + 1 && "font-bold underline")}
+                  >
                     {index + 1}
                   </PaginationLink>
                 </PaginationItem>

@@ -23,19 +23,23 @@ import { ProjectDTO } from "@/services/dto/project-dto";
 import { Owner } from "./components/owner";
 import { useRouter } from "next/navigation";
 import LoaderProject from "./components/loader-project";
+import { useLoadingStore } from "@/store/loading-store";
 
 export default function ProjectPage() {
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
+  const { hideLoading, showLoading } = useLoadingStore();
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
   async function fetchData() {
+    showLoading();
     try {
       const response = await projectsService.allProject();
       setProjects(response.data);
     } catch (error) {
       throw error;
     }
+    hideLoading();
   }
 
   useEffect(() => {

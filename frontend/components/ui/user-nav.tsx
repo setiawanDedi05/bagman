@@ -13,12 +13,15 @@ import { toast } from "./use-toast";
 import { useAuthStore } from "@/store/auth-store";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
+import { useLoadingStore } from "@/store/loading-store";
 
 export function UserNav() {
   const { user, removeSeason } = useAuthStore();
+  const { showLoading, hideLoading } = useLoadingStore();
   const router = useRouter();
 
   async function onClick() {
+    showLoading();
     try {
       const response = await authService.logout();
       if (response.status === 200) {
@@ -42,6 +45,7 @@ export function UserNav() {
         description: error.message,
       });
     }
+    hideLoading()
   }
 
   return (

@@ -55,6 +55,7 @@ import {
 } from "@/components/ui/command";
 import SelectPeople from "./select-people";
 import ClearAssignee from "./clear-assignee";
+import { useLoadingStore } from "@/store/loading-store";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -80,6 +81,7 @@ export default function AddTaskForm({
   setTotal,
 }: AddTaskFormProps) {
   const { user } = useAuthStore();
+  const { showLoading, hideLoading } = useLoadingStore();
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
   const [search, setSearch] = useState<string>("");
   const fetchData = useCallback(async () => {
@@ -119,7 +121,7 @@ export default function AddTaskForm({
       ...values,
       createdBy: user?.id!,
     };
-
+    showLoading();
     try {
       const response = await tasksService.createTask(requestData);
       if (response.status === 201) {
@@ -145,6 +147,7 @@ export default function AddTaskForm({
         description: error.message,
       });
     }
+    hideLoading();
   }
 
   return (

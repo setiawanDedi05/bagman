@@ -15,9 +15,12 @@ import { useAuthStore } from "@/store/auth-store";
 import { userService } from "@/services/user/user-service";
 import { getNotificationPermissionAndToken } from "@/lib/utils";
 import LoaderDashboard from "./components/loader-dashboard";
+import { useLoadingStore } from "@/store/loading-store";
+import { toast } from "@/components/ui/use-toast";
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
+  const { showLoading, hideLoading } = useLoadingStore();
   const [projects, setProjects] = useState([]);
   const [recenTask, setRecenTask] = useState([]);
   const [totalTaskThisMonth, setTotalTaskThisMonth] = useState(0);
@@ -28,6 +31,7 @@ export default function DashboardPage() {
   });
 
   const fetchData = useCallback(async (): Promise<void> => {
+    showLoading();
     try {
       const [backlog, onprogress, done, projects, recenTask, countThisMont] =
         await Promise.all([
@@ -47,9 +51,14 @@ export default function DashboardPage() {
       setProjects(projects.data);
       setRecenTask(recenTask.data);
       setTotalTaskThisMonth(countThisMont.data);
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error Fetching Data",
+        description: error.message,
+      });
     }
+    hideLoading();
   }, [setTotalTaskThisMonth, setTotalMyTask, setProjects, setRecenTask, user]);
 
   useEffect(() => {
