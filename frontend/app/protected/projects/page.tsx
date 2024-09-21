@@ -78,7 +78,7 @@ export default function ProjectPage() {
             <CardContent>Your project data is empty</CardContent>
           </Card>
         )}
-        <div className="w-full grid gap-2 lg:grid-cols-2">
+        <div className="w-full grid gap-2 mb-[100px] lg:grid-cols-2">
           {projects.map((project: ProjectDTO) => {
             return (
               <Card
