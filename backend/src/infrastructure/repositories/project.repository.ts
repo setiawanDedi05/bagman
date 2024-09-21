@@ -25,6 +25,9 @@ export class ProjectRepository implements IProjectRepository {
   async findAllProjects(): Promise<Project[]> {
     return await this.projectRepository.find({
       where: { isDelete: false },
+      order: {
+        createdAt: 'desc'
+      },
       relations: ['tasks', 'owner'],
     });
   }
