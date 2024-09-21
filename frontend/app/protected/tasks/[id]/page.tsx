@@ -150,7 +150,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
               </BreadcrumbList>
             </Breadcrumb>
 
-            <CardTitle className="flex justify-between items-center">
+            <CardTitle className="flex flex-col gap-5 md:flex-row justify-between md:items-center">
               <div className="flex flex-col">
                 <span className="uppercase mb-2">{task?.title}</span>
                 <div className="flex gap-2">
@@ -257,7 +257,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
               <AccordionItem value="item-1">
                 <AccordionTrigger>Peoples</AccordionTrigger>
                 <AccordionContent>
-                  <div className="w-[20%] flex flex-col gap-5">
+                  <div className="w-full lg:w-[20%] flex flex-col gap-5">
                     <div className="flex justify-between">
                       <span>Reporter</span>
                       <span>{task?.project?.owner.username}</span>
@@ -284,7 +284,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
               <AccordionItem value="item-1">
                 <AccordionTrigger>Dates</AccordionTrigger>
                 <AccordionContent>
-                  <div className="w-[30%] flex flex-col gap-5">
+                  <div className="w-full lg:w-[30%] flex flex-col gap-5">
                     <div className="flex justify-between">
                       <span>Created</span>
                       <span>{task?.createdAt}</span>
