@@ -12,7 +12,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { any, z } from "zod";
 import {
   Select,
   SelectContent,
@@ -85,15 +85,21 @@ export default function AddTaskForm({
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
   const [search, setSearch] = useState<string>("");
   const fetchData = useCallback(async () => {
+    showLoading();
     try {
       const response = await projectsService.allProject();
       setProjects(response.data);
       setTotal((prevState: number) => {
         return prevState++;
       });
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "failed to fetch data project",
+        description: error.message,
+      });
     }
+    hideLoading()
   }, [setProjects, setTotal]);
 
   useEffect(() => {
