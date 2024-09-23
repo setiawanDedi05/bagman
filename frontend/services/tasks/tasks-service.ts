@@ -1,5 +1,10 @@
 import { api } from "../api";
-import { CreateTaskRequest, UpdateTaskRequest } from "../dto/task-dto";
+import {
+  AssignToMeRequest,
+  ChangeStatusRequest,
+  CreateTaskRequest,
+  UpdateTaskRequest,
+} from "../dto/task-dto";
 import { endpoint } from "../endpoints";
 
 export const tasksService = {
@@ -17,5 +22,11 @@ export const tasksService = {
   },
   updateTask: async (request: UpdateTaskRequest, id: string) => {
     return await api.patch(`${endpoint.tasks.parent}/${id}`, request);
+  },
+  assignToMe: async (request: AssignToMeRequest, id: string) => {
+    return await api.patch(`${endpoint.tasks.assignToMe}/${id}`, request);
+  },
+  changeStatus: async (request: ChangeStatusRequest, id: string) => {
+    return await api.patch(`${endpoint.tasks.changeStatus}/${id}`, request);
   },
 };

@@ -18,14 +18,13 @@ import { toast } from "@/components/ui/use-toast";
 import { projectsService } from "@/services/projects/projects-service";
 import { Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
+import { useLoadingStore } from "@/store/loading-store";
 
 const formSchema = z.object({
   title: z.string().min(2, {
     message: "username must be at least 2 characters.",
   }),
-  description: z.string().min(6, {
-    message: "password must be at least 6 charachters.",
-  }),
+  description: z.string().optional(),
   key: z.string().max(3, {
     message: "key must be 3 or less",
   }),
@@ -47,6 +46,7 @@ export default function EditProjectForm({
   idProject,
 }: EditProjectFormProps) {
   const router = useRouter();
+  const { hideLoading, showLoading } = useLoadingStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,6 +57,7 @@ export default function EditProjectForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    showLoading();
     try {
       const response = await projectsService.updateProject(values, idProject);
       setOpen(false);
@@ -80,6 +81,7 @@ export default function EditProjectForm({
         description: error.message,
       });
     }
+    hideLoading();
   }
 
   return (
@@ -127,7 +129,9 @@ export default function EditProjectForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full lg:w-[200px]">Submit</Button>
+        <Button type="submit" className="w-full lg:w-[200px]">
+          Submit
+        </Button>
       </form>
     </Form>
   );

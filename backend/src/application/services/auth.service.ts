@@ -27,17 +27,17 @@ export class AuthService {
     const { username, password } = requestData;
     const user = await this.validateUser(username, password);
     if (!user) {
-      throw new ForbiddenException("Invalid Credential")
+      throw new ForbiddenException('Invalid Credential');
     }
     const payload = { username: user.username, sub: user.id };
     return {
       accessToken: this.jwtService.sign(payload),
-      user
+      user,
     };
   }
 
   async register(requestData: RegisterDto) {
-    const { username, password, email } = requestData;
+    const { username, password, email, name } = requestData;
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     try {
@@ -45,6 +45,7 @@ export class AuthService {
         username,
         email,
         password: hashedPassword,
+        name,
       });
 
       const verificationToken = this.jwtService.sign(

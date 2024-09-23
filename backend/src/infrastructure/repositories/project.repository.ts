@@ -18,13 +18,16 @@ export class ProjectRepository implements IProjectRepository {
   async findProjectById(id: string): Promise<Project | undefined> {
     return await this.projectRepository.findOne({
       where: { id, isDelete: false },
-      relations: ['tasks', 'owner'],
+      relations: ['tasks', 'tasks.assignees', 'owner'],
     });
   }
 
   async findAllProjects(): Promise<Project[]> {
     return await this.projectRepository.find({
       where: { isDelete: false },
+      order: {
+        createdAt: 'desc'
+      },
       relations: ['tasks', 'owner'],
     });
   }

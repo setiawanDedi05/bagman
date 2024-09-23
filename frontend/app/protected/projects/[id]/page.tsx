@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/sheet";
 import EditProjectForm from "../components/edit-project-form";
 import LoaderProjectDetail from "./components/loader-project-detail";
+import { useLoadingStore } from "@/store/loading-store";
 
 interface DetailProjectProps {
   params: {
@@ -51,21 +52,29 @@ export default function DetailProject({ params }: DetailProjectProps) {
   const [project, setProject] = useState<ProjectDTO>();
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { showLoading, hideLoading } = useLoadingStore();
 
   const fetchData = useCallback(async () => {
+    showLoading();
     try {
       const response = await projectsService.findProject(id);
       setProject(response.data);
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error Fetching Data",
+        description: error.message,
+      });
     }
-  }, [id]);
+    hideLoading();
+  }, [id, showLoading, hideLoading]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
   const onDelete = useCallback(async () => {
+    showLoading();
     try {
       const response = await projectsService.deleteProject(id);
       if (response.status === 200) {
@@ -88,7 +97,8 @@ export default function DetailProject({ params }: DetailProjectProps) {
         description: error.message,
       });
     }
-  }, [id, router]);
+    hideLoading();
+  }, [id, router, hideLoading, showLoading]);
 
   return (
     <Suspense fallback={<LoaderProjectDetail />}>
@@ -226,3 +236,5 @@ export default function DetailProject({ params }: DetailProjectProps) {
     </Suspense>
   );
 }
+
+export const dynamicParams = true;

@@ -12,7 +12,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { any, z } from "zod";
 import {
   Select,
   SelectContent,
@@ -54,21 +54,19 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import SelectPeople from "./select-people";
-import { Trash2Icon } from "lucide-react";
 import ClearAssignee from "./clear-assignee";
+import { useLoadingStore } from "@/store/loading-store";
 
 const formSchema = z.object({
   title: z.string().min(2, {
     message: "username must be at least 2 characters.",
   }),
-  description: z.string().min(6, {
-    message: "password must be at least 6 charachters.",
-  }),
+  description: z.string().optional(),
   status: z.nativeEnum(StatusTaskEnum),
   label: z.nativeEnum(LabelTaskEnum),
   priority: z.nativeEnum(PriorityTaskEnum),
   projectId: z.string(),
-  assignees: z.string(),
+  assignees: z.string().optional(),
 });
 
 interface AddTaskFormProps {
@@ -83,19 +81,26 @@ export default function AddTaskForm({
   setTotal,
 }: AddTaskFormProps) {
   const { user } = useAuthStore();
+  const { showLoading, hideLoading } = useLoadingStore();
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
   const [search, setSearch] = useState<string>("");
   const fetchData = useCallback(async () => {
+    showLoading();
     try {
       const response = await projectsService.allProject();
       setProjects(response.data);
       setTotal((prevState: number) => {
         return prevState++;
       });
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "failed to fetch data project",
+        description: error.message,
+      });
     }
-  }, [setProjects, setTotal]);
+    hideLoading()
+  }, [setProjects, setTotal, showLoading, hideLoading]);
 
   useEffect(() => {
     fetchData();
@@ -122,7 +127,7 @@ export default function AddTaskForm({
       ...values,
       createdBy: user?.id!,
     };
-
+    showLoading();
     try {
       const response = await tasksService.createTask(requestData);
       if (response.status === 201) {
@@ -148,6 +153,7 @@ export default function AddTaskForm({
         description: error.message,
       });
     }
+    hideLoading();
   }
 
   return (

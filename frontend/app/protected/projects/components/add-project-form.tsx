@@ -19,14 +19,13 @@ import { projectsService } from "@/services/projects/projects-service";
 import { useAuthStore } from "@/store/auth-store";
 import { CreateProjectRequest, ProjectDTO } from "@/services/dto/project-dto";
 import { Dispatch, SetStateAction } from "react";
+import { useLoadingStore } from "@/store/loading-store";
 
 const formSchema = z.object({
   title: z.string().min(2, {
     message: "username must be at least 2 characters.",
   }),
-  description: z.string().min(6, {
-    message: "password must be at least 6 charachters.",
-  }),
+  description: z.string().optional(),
   key: z.string().max(3, {
     message: "key must be 3 or less",
   }),
@@ -42,6 +41,7 @@ export default function AddProjectForm({
   setOpen,
 }: AddProjectFormProps) {
   const { user } = useAuthStore();
+  const { hideLoading, showLoading } = useLoadingStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,6 +57,7 @@ export default function AddProjectForm({
       userId: user?.id!,
     };
     try {
+      showLoading()
       const response = await projectsService.createProject(requestData);
       if (response.status === 201) {
         toast({
@@ -81,6 +82,7 @@ export default function AddProjectForm({
         description: error.message,
       });
     }
+    hideLoading()
   }
 
   return (
