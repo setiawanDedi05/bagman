@@ -1,11 +1,10 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Task, columns } from "./columns";
 import { DataTable } from "./data-table";
 import { tasksService } from "@/services/tasks/tasks-service";
 import { useSearchParams } from "next/navigation";
-import LoaderTask from "./components/loader-task";
 import { useAuthStore } from "@/store/auth-store";
 import { useLoadingStore } from "@/store/loading-store";
 import { toast } from "@/components/ui/use-toast";
@@ -39,16 +38,14 @@ export default function TasksPage() {
   }, [fetchData]);
 
   return (
-    <Suspense fallback={<LoaderTask />}>
-      <div className="container mx-auto py-10">
-        <DataTable
-          columns={columns(user)}
-          data={tasks}
-          total={totalTasks}
-          setTasks={setTasks}
-          setTotal={setTotalTasks}
-        />
-      </div>
-    </Suspense>
+    <div className="container mx-auto py-10">
+      <DataTable
+        columns={columns(user)}
+        data={tasks}
+        total={totalTasks}
+        setTasks={setTasks}
+        setTotal={setTotalTasks}
+      />
+    </div>
   );
 }
