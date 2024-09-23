@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -8,23 +8,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { authService } from "@/services/auth/auth-service";
+import { useSearchParams } from "next/navigation";
 
 export const dynamic = "force-dynamic"; // Pastikan ini ada untuk rendering dinamis
 
-export default function VerifyEmail({
-  searchParams,
-}: {
-  searchParams: { token?: string };
-}) {
+export default function VerifyEmail() {
+  
   const [token, setToken] = useState<string | undefined>();
+  const searchParams = useSearchParams();
   const [verificationResult, setVerificationResult] = useState<{
     success: boolean;
     message: string;
   } | null>(null);
 
   useEffect(() => {
-    const params = searchParams.token;
-    setToken(params);
+    const params = searchParams.get('token');
+    setToken(params as string);
+    console.log({params, token});
     const verifyEmail = async () => {
       if (!token) {
         setVerificationResult({ success: false, message: "Token is missing." });
