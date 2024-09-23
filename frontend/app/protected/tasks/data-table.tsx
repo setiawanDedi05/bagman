@@ -64,6 +64,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const queryParams = useSearchParams();
   const page = queryParams.get("page");
+  const totalPage = Math.ceil(total / 10);
 
   const table = useReactTable({
     data,
@@ -160,33 +161,37 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {Math.ceil(total / 10) > 1 && (
+      {totalPage > 1 && (
         <Pagination className="mt-5 flex justify-end">
           <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href={page ? `?page=${parseInt(page) - 1}` : ""}
-              />
-            </PaginationItem>
-            {Array.from({ length: Math.ceil(total / 10) }, (_, index) => (
+            {Number(page) > 1 && (
+              <PaginationItem>
+                <PaginationPrevious
+                  href={page ? `?page=${Number(page) - 1}` : ""}
+                />
+              </PaginationItem>
+            )}
+            {Array.from({ length: totalPage }, (_, index) => (
               <PaginationItem key={`pagination-item-${index}`}>
                 <PaginationLink
+                  isActive={
+                    !page
+                      ? index === 0
+                        ? true
+                        : false
+                      : Number(page) === index + 1
+                  }
                   href={`?page=${index + 1}`}
-                  // className={cn(parseInt(page!) === index + 1 && "font-bold underline")}
                 >
                   {index + 1}
                 </PaginationLink>
               </PaginationItem>
             ))}
-            <PaginationItem>
-              <PaginationNext
-                href={
-                  !page && parseInt(page || "1") < Math.ceil(total / 10)
-                    ? `?page=${parseInt(page || "1") + 1}`
-                    : ""
-                }
-              />
-            </PaginationItem>
+            {Number(page) < totalPage && (
+              <PaginationItem>
+                <PaginationNext href={`?page=${Number(page) + 1}`} />
+              </PaginationItem>
+            )}
           </PaginationContent>
         </Pagination>
       )}
