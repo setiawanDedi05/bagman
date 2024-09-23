@@ -4,11 +4,10 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
@@ -39,7 +38,6 @@ import { mapperLabelBadge, mapperPriorityBadge } from "@/lib/utils";
 import Feedback from "./components/feedback";
 import EditTaskForm from "../components/edit-task-form";
 import { Task } from "../columns";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Accordion,
   AccordionContent,
@@ -54,7 +52,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import LoaderTaskDetail from "./components/loader-task-detail";
 import { StatusTaskEnum } from "@/services/dto/task-dto";
 import { useLoadingStore } from "@/store/loading-store";
 
@@ -130,9 +127,9 @@ export default function DetailTask({ params }: DetailTaskProps) {
   );
 
   return (
-    <Suspense fallback={<LoaderTaskDetail />}>
+    <>
       {!task ? (
-        <>Unknow Id</>
+        <>Ups!, Unknow Id</>
       ) : (
         <Card className="w-full border-none">
           <CardHeader>
@@ -308,7 +305,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
           </CardContent>
         </Card>
       )}
-    </Suspense>
+    </>
   );
 }
 
