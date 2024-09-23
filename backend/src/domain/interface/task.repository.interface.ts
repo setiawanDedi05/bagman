@@ -10,5 +10,5 @@ export interface ITaskRepository {
   updateTask(id: string, updateTaskData: Partial<Task>): Promise<Task>;
   deleteTask(id: string): Promise<Task>;
   recentTask(id: string): Promise<Task[]>;
-  countTasksThisMonth(): Promise<number>;
+  countTasksThisMonth(id: string): Promise<number>;
 }

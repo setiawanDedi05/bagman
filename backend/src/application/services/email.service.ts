@@ -59,4 +59,40 @@ export class EmailService {
       },
     });
   }
+
+  async sendEmailToOwner(
+    email: string,
+    name: string,
+    title: string,
+    assignees: string,
+  ): Promise<void> {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: `Task ${title} Assignment Notification`,
+      template: './notification-to-owner',
+      context: {
+        name,
+        title,
+        assignees,
+      },
+    });
+  }
+
+  async sendEmailUpdateStatus(
+    email: string,
+    name: string,
+    title: string,
+    status: string,
+  ): Promise<void> {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: `Task ${title} Updated Status`,
+      template: './notification-status-task-updated',
+      context: {
+        name,
+        title,
+        status,
+      },
+    });
+  }
 }

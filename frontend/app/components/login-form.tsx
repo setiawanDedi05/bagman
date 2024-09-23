@@ -24,6 +24,7 @@ import { authService } from "@/services/auth/auth-service";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuthStore } from "@/store/auth-store";
+import { useLoadingStore } from "@/store/loading-store";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -36,6 +37,7 @@ const formSchema = z.object({
 
 function LoginForm() {
   const { setSeason } = useAuthStore();
+  const { hideLoading, showLoading } = useLoadingStore();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -48,6 +50,7 @@ function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    showLoading();
     try {
       const response = await authService.login(values);
       if (response.status === 200) {
@@ -71,6 +74,7 @@ function LoginForm() {
         description: error.message,
       });
     }
+    hideLoading()
   }
 
   return (

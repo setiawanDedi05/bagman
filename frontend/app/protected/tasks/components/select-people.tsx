@@ -20,12 +20,12 @@ interface SelectPeopleProps {
   input: string;
   field: ControllerRenderProps<{
     title: string;
-    description: string;
+    description?: string;
     status: StatusTaskEnum;
     label: LabelTaskEnum;
     priority: PriorityTaskEnum;
     projectId: string;
-    assignees: string;
+    assignees?: string;
   }>;
   setInput: Dispatch<SetStateAction<string>>;
 }

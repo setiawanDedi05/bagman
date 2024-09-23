@@ -42,6 +42,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -80,7 +81,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
+    <Suspense fallback={<div>Loading...</div>}>
       <div className="flex justify-between items-center py-4 gap-5">
         <Input
           placeholder="Filter title..."
@@ -160,34 +161,35 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       {Math.ceil(total / 10) > 1 && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <Pagination className="mt-5 flex justify-end">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href={page ? `?page=${parseInt(page) - 1}` : ""}
-                />
+        <Pagination className="mt-5 flex justify-end">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href={page ? `?page=${parseInt(page) - 1}` : ""}
+              />
+            </PaginationItem>
+            {Array.from({ length: Math.ceil(total / 10) }, (_, index) => (
+              <PaginationItem key={`pagination-item-${index}`}>
+                <PaginationLink
+                  href={`?page=${index + 1}`}
+                  // className={cn(parseInt(page!) === index + 1 && "font-bold underline")}
+                >
+                  {index + 1}
+                </PaginationLink>
               </PaginationItem>
-              {Array.from({ length: Math.ceil(total / 10) }, (_, index) => (
-                <PaginationItem key={`pagination-item-${index}`}>
-                  <PaginationLink href={`?page=${index + 1}`}>
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  href={
-                    !page && parseInt(page || "1") < Math.ceil(total / 10)
-                      ? `?page=${parseInt(page || "1") + 1}`
-                      : ""
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </Suspense>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                href={
+                  !page && parseInt(page || "1") < Math.ceil(total / 10)
+                    ? `?page=${parseInt(page || "1") + 1}`
+                    : ""
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       )}
-    </div>
+    </Suspense>
   );
 }

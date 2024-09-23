@@ -11,12 +11,12 @@ import { ControllerRenderProps, UseFormReturn } from "react-hook-form";
 interface ClearAssigneeProps {
   form: UseFormReturn<{
     title: string;
-    description: string;
+    description?: string;
     status: StatusTaskEnum;
     label: LabelTaskEnum;
     priority: PriorityTaskEnum;
     projectId: string;
-    assignees: string;
+    assignees?: string;
   }>;
 }
 

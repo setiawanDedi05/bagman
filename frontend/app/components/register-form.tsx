@@ -23,6 +23,7 @@ import { z } from "zod";
 import { authService } from "@/services/auth/auth-service";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useLoadingStore } from "@/store/loading-store";
 
 const formSchema = z.object({
   email: z.string().email({ message: "email must be using email format" }),
@@ -32,20 +33,26 @@ const formSchema = z.object({
   password: z.string().min(6, {
     message: "password must be at least 6 charachters.",
   }),
+  name: z.string().min(4, {
+    message: "name must be at least 4 charachters.",
+  }),
 });
 
 function RegisterForm() {
   const router = useRouter();
+  const { showLoading, hideLoading } = useLoadingStore();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
       password: "",
       email: "",
+      name: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    showLoading();
     try {
       const response = await authService.register(values);
       if (response.status === 201) {
@@ -65,9 +72,10 @@ function RegisterForm() {
       toast({
         variant: "destructive",
         title: "Registration Failed",
-        description: error.message,
+        description: error?.response?.data?.message || error?.message,
       });
     }
+    hideLoading();
   }
 
   return (
@@ -82,6 +90,19 @@ function RegisterForm() {
           render={({ field }) => (
             <FormItem className="flex flex-col justify-start items-start">
               <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="example username" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem className="flex flex-col justify-start items-start">
+              <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input placeholder="example name" {...field} />
               </FormControl>

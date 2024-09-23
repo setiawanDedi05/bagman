@@ -15,7 +15,9 @@ export class TaskRepository implements ITaskRepository {
     return await this.taskRepository.save(newTask);
   }
 
-  async findAllTasks(offset: number): Promise<{ content: Task[]; total_data: number }> {
+  async findAllTasks(
+    offset: number,
+  ): Promise<{ content: Task[]; total_data: number }> {
     const response = await this.taskRepository.findAndCount({
       where: { project: { isDelete: false }, isDelete: false },
       order: {
@@ -23,7 +25,7 @@ export class TaskRepository implements ITaskRepository {
       },
       take: 10,
       skip: offset,
-      relations: ['project'],
+      relations: ['project', 'assignees'],
     });
     return {
       content: response[0],
@@ -34,13 +36,13 @@ export class TaskRepository implements ITaskRepository {
   async findTaskById(id: string): Promise<Task> {
     return await this.taskRepository.findOne({
       where: { id },
-      relations: ['project', 'project.owner', 'assignees'],
+      relations: ['project', 'project.owner', 'assignees', 'createdBy'],
     });
   }
 
   async getTotalMyTask(assigneesId: string, status: string): Promise<number> {
     return await this.taskRepository.count({
-      where: { assignees: { id: assigneesId }, status },
+      where: { assignees: { id: assigneesId }, status, isDelete: false },
     });
   }
 
@@ -66,7 +68,7 @@ export class TaskRepository implements ITaskRepository {
   async recentTask(id: string): Promise<Task[]> {
     try {
       return await this.taskRepository.find({
-        where: { assignees: { id } },
+        where: { assignees: { id }, isDelete: false, status: 'done' },
         order: {
           createdAt: 'DESC',
         },
@@ -78,13 +80,16 @@ export class TaskRepository implements ITaskRepository {
     }
   }
 
-  async countTasksThisMonth(): Promise<number> {
+  async countTasksThisMonth(id: string): Promise<number> {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
     return this.taskRepository.count({
       where: {
+        assignees: { id },
+        isDelete: false,
+        status: "done",
         createdAt: Between(startOfMonth, endOfMonth),
       },
     });

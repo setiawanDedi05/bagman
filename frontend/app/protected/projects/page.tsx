@@ -23,24 +23,28 @@ import { ProjectDTO } from "@/services/dto/project-dto";
 import { Owner } from "./components/owner";
 import { useRouter } from "next/navigation";
 import LoaderProject from "./components/loader-project";
+import { useLoadingStore } from "@/store/loading-store";
 
 export default function ProjectPage() {
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
+  const { hideLoading, showLoading } = useLoadingStore();
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
+    showLoading();
     try {
       const response = await projectsService.allProject();
       setProjects(response.data);
     } catch (error) {
       throw error;
     }
-  }
+    hideLoading();
+  }, [showLoading, hideLoading]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const goToDetail = useCallback(
     (id: string) => {
@@ -74,7 +78,7 @@ export default function ProjectPage() {
             <CardContent>Your project data is empty</CardContent>
           </Card>
         )}
-        <div className="w-full grid gap-2 lg:grid-cols-2">
+        <div className="w-full grid gap-2 mb-[100px] lg:grid-cols-2">
           {projects.map((project: ProjectDTO) => {
             return (
               <Card

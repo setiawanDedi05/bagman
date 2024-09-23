@@ -43,19 +43,18 @@ import CustomEditor from "@/components/ui/editor";
 import { Task } from "../columns";
 import SelectPeople from "./select-people";
 import ClearAssignee from "./clear-assignee";
+import { useLoadingStore } from "@/store/loading-store";
 
 const formSchema = z.object({
   title: z.string().min(2, {
     message: "username must be at least 2 characters.",
   }),
-  description: z.string().min(6, {
-    message: "password must be at least 6 charachters.",
-  }),
+  description: z.string().optional(),
   status: z.nativeEnum(StatusTaskEnum),
   label: z.nativeEnum(LabelTaskEnum),
   priority: z.nativeEnum(PriorityTaskEnum),
   projectId: z.string(),
-  assignees: z.string(),
+  assignees: z.string().optional(),
 });
 
 interface EditTaskFormProps {
@@ -71,15 +70,22 @@ export default function EditTaskForm({
 }: EditTaskFormProps) {
   const { user } = useAuthStore();
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
+  const { showLoading, hideLoading } = useLoadingStore();
   const [search, setSearch] = useState<string>(task?.assignees?.username || "");
   const fetchData = useCallback(async () => {
+    showLoading();
     try {
       const response = await projectsService.allProject();
       setProjects(response.data);
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "failed to fetch data project",
+        description: error.message,
+      });
     }
-  }, []);
+    hideLoading();
+  }, [hideLoading, showLoading]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -99,7 +105,7 @@ export default function EditTaskForm({
       ...values,
       createdBy: user?.id!,
     };
-
+    showLoading()
     try {
       const response = await tasksService.updateTask(
         requestData,
@@ -126,6 +132,7 @@ export default function EditTaskForm({
         description: error.message,
       });
     }
+    hideLoading()
   }
 
   const onChangeSearch = useCallback((event: any) => {
@@ -296,7 +303,7 @@ export default function EditTaskForm({
           )}
         />
         <SheetClose asChild>
-          <Button type="submit" className="w-full lg:w-[200px]">
+          <Button type="submit" className="w-full md:w-[200px]">
             Submit
           </Button>
         </SheetClose>
