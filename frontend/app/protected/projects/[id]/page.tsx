@@ -67,7 +67,7 @@ export default function DetailProject({ params }: DetailProjectProps) {
       });
     }
     hideLoading();
-  }, [id]);
+  }, [id, showLoading, hideLoading]);
 
   useEffect(() => {
     fetchData();
@@ -98,7 +98,7 @@ export default function DetailProject({ params }: DetailProjectProps) {
       });
     }
     hideLoading();
-  }, [id, router]);
+  }, [id, router, hideLoading, showLoading]);
 
   return (
     <Suspense fallback={<LoaderProjectDetail />}>
@@ -236,3 +236,5 @@ export default function DetailProject({ params }: DetailProjectProps) {
     </Suspense>
   );
 }
+
+export const dynamicParams = true;

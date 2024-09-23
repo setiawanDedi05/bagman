@@ -79,7 +79,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
       throw error;
     }
     hideLoading();
-  }, [id]);
+  }, [id, showLoading, hideLoading]);
 
   useEffect(() => {
     fetchData();
@@ -110,7 +110,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
       });
     }
     hideLoading();
-  }, [id, router]);
+  }, [id, router, hideLoading, showLoading]);
 
   const handleChangeStatus = useCallback(
     async (status: string) => {
@@ -126,7 +126,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
       }
       hideLoading();
     },
-    [id]
+    [id, showLoading, hideLoading]
   );
 
   return (
@@ -311,3 +311,5 @@ export default function DetailTask({ params }: DetailTaskProps) {
     </Suspense>
   );
 }
+
+export const dynamicParams = true;

@@ -16,7 +16,6 @@ import Link from "next/link";
 import { User } from "@/services/dto/user";
 import { tasksService } from "@/services/tasks/tasks-service";
 import { toast } from "@/components/ui/use-toast";
-import { useAuthStore } from "@/store/auth-store";
 
 export type Task = {
   id: string;

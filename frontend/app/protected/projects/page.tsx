@@ -31,7 +31,7 @@ export default function ProjectPage() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     showLoading();
     try {
       const response = await projectsService.allProject();
@@ -40,11 +40,11 @@ export default function ProjectPage() {
       throw error;
     }
     hideLoading();
-  }
+  }, [showLoading, hideLoading]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const goToDetail = useCallback(
     (id: string) => {

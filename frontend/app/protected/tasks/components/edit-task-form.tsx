@@ -85,7 +85,7 @@ export default function EditTaskForm({
       });
     }
     hideLoading();
-  }, []);
+  }, [hideLoading, showLoading]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

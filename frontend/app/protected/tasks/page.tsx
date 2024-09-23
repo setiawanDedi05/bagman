@@ -27,7 +27,7 @@ export default function TasksPage() {
       throw error;
     }
     hideLoading();
-  }, []);
+  }, [hideLoading, showLoading]);
 
   useEffect(() => {
     fetchData(page || "1");

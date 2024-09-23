@@ -100,7 +100,7 @@ export default function AddTaskForm({
       });
     }
     hideLoading()
-  }, [setProjects, setTotal]);
+  }, [setProjects, setTotal, showLoading, hideLoading]);
 
   useEffect(() => {
     fetchData();
