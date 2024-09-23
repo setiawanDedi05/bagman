@@ -24,6 +24,7 @@ import { Owner } from "./components/owner";
 import { useRouter } from "next/navigation";
 import LoaderProject from "./components/loader-project";
 import { useLoadingStore } from "@/store/loading-store";
+import Link from "next/link";
 
 export default function ProjectPage() {
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
@@ -81,19 +82,20 @@ export default function ProjectPage() {
         <div className="w-full grid gap-2 mb-[100px] lg:grid-cols-2">
           {projects.map((project: ProjectDTO) => {
             return (
-              <Card
-                key={project.id}
-                onClick={() => goToDetail(project.id)}
-                className="hover:cursor-pointer hover:bg-slate-300"
-              >
-                <CardHeader>
-                  <CardTitle className="text-lg">{project.title}</CardTitle>
-                  <CardDescription>{project.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Owner data={project.owner} />
-                </CardContent>
-              </Card>
+              <Link href={`/protected/projects/${project.id}`}>
+                <Card
+                  key={project.id}
+                  className="hover:cursor-pointer hover:bg-slate-300"
+                >
+                  <CardHeader>
+                    <CardTitle className="text-lg">{project.title}</CardTitle>
+                    <CardDescription>{project.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Owner data={project.owner} />
+                  </CardContent>
+                </Card>
+              </Link>
             );
           })}
         </div>
