@@ -11,7 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ProjectDTO } from "@/services/dto/project-dto";
 import { StatusTaskEnum } from "@/services/dto/task-dto";
 import { projectsService } from "@/services/projects/projects-service";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
@@ -100,14 +100,14 @@ export default function DetailProject({ params }: DetailProjectProps) {
   }, [id, router, hideLoading, showLoading]);
 
   return (
-    <Card className="w-full border-none">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex justify-between">
           <span className="uppercase">{project?.title}</span>
           <div className="flex gap-5">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger className="self-end">
-                <Button variant="outline">Edit</Button>
+                <Button variant="neutral">Edit</Button>
               </SheetTrigger>
               <SheetContent side="bottom" className="h-auto">
                 <SheetHeader>
@@ -129,7 +129,7 @@ export default function DetailProject({ params }: DetailProjectProps) {
             </Sheet>
             <AlertDialog>
               <AlertDialogTrigger>
-                <Button variant="destructive">Delete</Button>
+                <Button variant="neutral">Delete</Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>

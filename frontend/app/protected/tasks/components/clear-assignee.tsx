@@ -27,7 +27,7 @@ export default function ClearAssignee({ form }: ClearAssigneeProps) {
 
   return (
     <Button
-      variant="ghost"
+      variant="neutral"
       onClick={onClick}
       className="hover:bg-red-400 hover:text-white"
     >

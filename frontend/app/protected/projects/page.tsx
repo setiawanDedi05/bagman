@@ -57,7 +57,7 @@ export default function ProjectPage() {
     <div className="flex flex-col w-full gap-5">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger className="self-end">
-          <Button variant="outline">Create</Button>
+          <Button>Create</Button>
         </SheetTrigger>
         <SheetContent side="bottom" className="h-auto">
           <SheetHeader>

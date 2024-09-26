@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
         />
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger className="self-end">
-            <Button variant="outline">Create</Button>
+            <Button>Create</Button>
           </SheetTrigger>
           <SheetContent side="bottom" className="h-[70%] overflow-scroll">
             <SheetHeader>

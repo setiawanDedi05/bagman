@@ -69,8 +69,8 @@ export default function TaskList({ tasks = [] }: TaskListProps) {
                   className="uppercase"
                   variant={
                     item.priority === PriorityTaskEnum.HIGH
-                      ? "destructive"
-                      : "secondary"
+                      ? "default"
+                      : "neutral"
                   }
                 >
                   {item.priority}

@@ -28,7 +28,20 @@ const config = {
         "50": "0.50",
       },
       colors: {
-        border: "hsl(var(--border))",
+        main: "#FFDC58",
+        mainAccent: "#ffc800", // not needed for shadcn components
+        overlay: "rgba(0,0,0,0.8)", // background color overlay for alert dialogs, modals, etc.
+
+        // light mode
+        bg: "#FEF2E8",
+        text: "#000",
+        border: "#000",
+
+        // dark mode
+        darkBg: "#374151",
+        darkText: "#eeefe9",
+        darkBorder: "#000",
+        secondaryBlack: "#1b1b1b",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -63,9 +76,24 @@ const config = {
         },
       },
       borderRadius: {
+        base: "5px",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        light: "4px 4px 0px 0px #000",
+        dark: "4px 4px 0px 0px #000",
+      },
+      translate: {
+        boxShadowX: "4px",
+        boxShadowY: "4px",
+        reverseBoxShadowX: "-4px",
+        reverseBoxShadowY: "-4px",
+      },
+      fontWeight: {
+        base: "500",
+        heading: "700",
       },
       keyframes: {
         "accordion-down": {

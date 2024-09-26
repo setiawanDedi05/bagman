@@ -9,22 +9,18 @@ export function cn(...inputs: ClassValue[]) {
 export function mapperLabelBadge(label?: string) {
   switch (label) {
     case "bug":
-      return "destructive";
-    case "documentation":
-      return "outline";
+      return "default";
     default:
-      return "secondary";
+      return "neutral";
   }
 }
 
 export function mapperPriorityBadge(priority?: string) {
   switch (priority) {
     case "high":
-      return "destructive";
-    case "low":
-      return "outline";
+      return "default";
     default:
-      return "secondary";
+      return "neutral";
   }
 }
 

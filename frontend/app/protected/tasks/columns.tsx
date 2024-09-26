@@ -37,7 +37,8 @@ export function columns(user: User | null): ColumnDef<Task>[] {
       header: ({ column }) => {
         return (
           <Button
-            variant="ghost"
+            className="border-none"
+            variant="noShadow"
             onClick={() =>
               column.toggleSorting(column.getIsSorted() === "asc", true)
             }
@@ -64,7 +65,8 @@ export function columns(user: User | null): ColumnDef<Task>[] {
       header: ({ column }) => {
         return (
           <Button
-            variant="ghost"
+            className="border-none"
+            variant="noShadow"
             onClick={() =>
               column.toggleSorting(column.getIsSorted() === "asc", true)
             }
@@ -82,7 +84,7 @@ export function columns(user: User | null): ColumnDef<Task>[] {
         return (
           <Link href={`/protected/tasks/${row.original.id}`}>
             <div className="flex space-x-2">
-              {label && <Badge variant="outline">{label.label}</Badge>}
+              {label && <Badge variant="neutral">{label.label}</Badge>}
               <span className="max-w-[500px] truncate font-medium underline text-blue-500 hover:no-underline hover:text-black">
                 {row.getValue("title")}
               </span>
@@ -96,7 +98,8 @@ export function columns(user: User | null): ColumnDef<Task>[] {
       header: ({ column }) => {
         return (
           <Button
-            variant="ghost"
+            className="border-none"
+            variant="noShadow"
             onClick={() =>
               column.toggleSorting(column.getIsSorted() === "asc", true)
             }
@@ -133,7 +136,8 @@ export function columns(user: User | null): ColumnDef<Task>[] {
       header: ({ column }) => {
         return (
           <Button
-            variant="ghost"
+            className="border-none"
+            variant="noShadow"
             onClick={() =>
               column.toggleSorting(column.getIsSorted() === "asc", true)
             }
@@ -167,7 +171,8 @@ export function columns(user: User | null): ColumnDef<Task>[] {
       header: ({ column }) => {
         return (
           <Button
-            variant="ghost"
+            className="border-none"
+            variant="noShadow"
             onClick={() =>
               column.toggleSorting(column.getIsSorted() === "asc", true)
             }

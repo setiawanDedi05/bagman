@@ -52,7 +52,7 @@ export function UserNav() {
     <Suspense fallback={<p>Loading...</p>}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Button variant="neutral" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
               {/* <AvatarImage
                 src={`/avatars/${user?.username}.png`}

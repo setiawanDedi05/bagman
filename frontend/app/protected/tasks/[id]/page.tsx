@@ -131,7 +131,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
       {!task ? (
         <>Ups!, Unknow Id</>
       ) : (
-        <Card className="w-full border-none">
+        <Card className="w-full">
           <CardHeader>
             <Breadcrumb>
               <BreadcrumbList>
@@ -151,7 +151,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
               <div className="flex flex-col">
                 <span className="uppercase mb-2">{task?.title}</span>
                 <div className="flex gap-2">
-                  <Badge variant="outline">
+                  <Badge variant="neutral">
                     <span className="capitalize">{task?.status}</span>
                   </Badge>
                 </div>
@@ -159,7 +159,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
               <div className="flex gap-5">
                 {task.status === StatusTaskEnum.BACKLOG && (
                   <Button
-                    variant="default"
+                    variant="neutral"
                     onClick={() =>
                       handleChangeStatus(StatusTaskEnum.ONPROGRESS)
                     }
@@ -169,7 +169,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
                 )}
                 {task.status === StatusTaskEnum.ONPROGRESS && (
                   <Button
-                    variant="default"
+                    variant="neutral"
                     onClick={() => handleChangeStatus(StatusTaskEnum.DONE)}
                   >
                     Done
@@ -177,7 +177,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
                 )}
                 <Sheet open={open} onOpenChange={setOpen}>
                   <SheetTrigger className="self-end">
-                    <Button variant="outline">Edit</Button>
+                    <Button variant="neutral">Edit</Button>
                   </SheetTrigger>
                   <SheetContent
                     side="bottom"
@@ -198,7 +198,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
                 </Sheet>
                 <AlertDialog>
                   <AlertDialogTrigger>
-                    <Button variant="destructive">Delete</Button>
+                    <Button variant="neutral">Delete</Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
