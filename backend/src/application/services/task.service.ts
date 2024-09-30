@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from '../dto/task/create-task.dto';
 import { UpdateTaskDto } from '../dto/task/update-task.dto';
 import { TaskRepository } from 'src/infrastructure/repositories/task.repository';
@@ -6,6 +6,7 @@ import { NotificationService } from './notification.service';
 import { UserRepository } from 'src/infrastructure/repositories/user.repository';
 import { ProjectRepository } from 'src/infrastructure/repositories/project.repository';
 import { EmailService } from './email.service';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class TaskService {
@@ -15,6 +16,7 @@ export class TaskService {
     private readonly emailService: EmailService,
     private readonly notificationService: NotificationService,
     private readonly projectRepository: ProjectRepository,
+    @Inject('QUEUE_SERVICE') private readonly broker: ClientProxy,
   ) {}
 
   async create(createTaskDto: CreateTaskDto) {
@@ -41,6 +43,13 @@ export class TaskService {
       };
       const response = await this.taskRepository.createTask(task);
       if (response && assignees) {
+        this.broker.emit('send_notification', {
+          email: assignees.email,
+          name: assignees.name,
+          task: task.title,
+          owner: project.owner.name,
+        });
+        console.log(this.broker, "ini")
         await this.emailService.sendEmailToAssignees(
           assignees.email,
           assignees.name,
