@@ -54,6 +54,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { StatusTaskEnum } from "@/services/dto/task-dto";
 import { useLoadingStore } from "@/store/loading-store";
+import { useAuthStore } from "@/store/auth-store";
 
 interface DetailTaskProps {
   params: {
@@ -63,6 +64,9 @@ interface DetailTaskProps {
 export default function DetailTask({ params }: DetailTaskProps) {
   const { id } = params;
   const { showLoading, hideLoading } = useLoadingStore();
+  const { user } = useAuthStore();
+  const [isAuthor, setIsAuthor] = useState<boolean>(false);
+  const [isAssignee, setIsAssignee] = useState<boolean>(false);
   const [task, setTask] = useState<Task>();
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -72,6 +76,10 @@ export default function DetailTask({ params }: DetailTaskProps) {
     try {
       const response = await tasksService.detailTask(id);
       setTask(response.data);
+      setIsAssignee(
+        response.data.assignees && response.data.assignees.id === user?.id
+      );
+      setIsAuthor(response.data.project.owner.id === user?.id);
     } catch (error) {
       throw error;
     }
@@ -157,7 +165,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
                 </div>
               </div>
               <div className="flex gap-5">
-                {task.status === StatusTaskEnum.BACKLOG && (
+                {task.status === StatusTaskEnum.BACKLOG && isAssignee && (
                   <Button
                     variant="neutral"
                     onClick={() =>
@@ -167,7 +175,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
                     On Progress
                   </Button>
                 )}
-                {task.status === StatusTaskEnum.ONPROGRESS && (
+                {task.status === StatusTaskEnum.ONPROGRESS && isAssignee && (
                   <Button
                     variant="neutral"
                     onClick={() => handleChangeStatus(StatusTaskEnum.DONE)}
@@ -175,48 +183,53 @@ export default function DetailTask({ params }: DetailTaskProps) {
                     Done
                   </Button>
                 )}
-                <Sheet open={open} onOpenChange={setOpen}>
-                  <SheetTrigger className="self-end">
-                    <Button variant="neutral">Edit</Button>
-                  </SheetTrigger>
-                  <SheetContent
-                    side="bottom"
-                    className="h-[70%] overflow-scroll"
-                  >
-                    <SheetHeader>
-                      <SheetTitle>Edit Task {task?.title}</SheetTitle>
-                      <SheetDescription>
-                        Bring Your Ideas to Life: Start Your Task Today!
-                      </SheetDescription>
-                    </SheetHeader>
-                    <EditTaskForm
-                      setTask={setTask}
-                      setOpen={setOpen}
-                      task={task}
-                    />
-                  </SheetContent>
-                </Sheet>
-                <AlertDialog>
-                  <AlertDialogTrigger>
-                    <Button variant="neutral">Delete</Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will delete your Task
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={onDelete}>
-                        Continue
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                {isAuthor && (
+                  <Sheet open={open} onOpenChange={setOpen}>
+                    <SheetTrigger className="self-end">
+                      <Button variant="neutral">Edit</Button>
+                    </SheetTrigger>
+                    <SheetContent
+                      side="bottom"
+                      className="h-[70%] overflow-scroll"
+                    >
+                      <SheetHeader>
+                        <SheetTitle>Edit Task {task?.title}</SheetTitle>
+                        <SheetDescription>
+                          Bring Your Ideas to Life: Start Your Task Today!
+                        </SheetDescription>
+                      </SheetHeader>
+                      <EditTaskForm
+                        setTask={setTask}
+                        setOpen={setOpen}
+                        task={task}
+                      />
+                    </SheetContent>
+                  </Sheet>
+                )}
+                {isAuthor && (
+                  <AlertDialog>
+                    <AlertDialogTrigger>
+                      <Button variant="neutral">Delete</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will delete your
+                          Task
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={onDelete}>
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </div>
             </CardTitle>
             <CardDescription>

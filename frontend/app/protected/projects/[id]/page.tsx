@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/sheet";
 import EditProjectForm from "../components/edit-project-form";
 import { useLoadingStore } from "@/store/loading-store";
+import { useAuthStore } from "@/store/auth-store";
 
 interface DetailProjectProps {
   params: {
@@ -50,14 +51,17 @@ export default function DetailProject({ params }: DetailProjectProps) {
   const { id } = params;
   const [project, setProject] = useState<ProjectDTO>();
   const [open, setOpen] = useState(false);
+  const { user } = useAuthStore();
   const router = useRouter();
   const { showLoading, hideLoading } = useLoadingStore();
+  const [isAuthor, setIsAuthor] = useState<boolean>(false);
 
   const fetchData = useCallback(async () => {
     showLoading();
     try {
       const response = await projectsService.findProject(id);
       setProject(response.data);
+      setIsAuthor(response.data.owner.id === user?.id);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -105,47 +109,54 @@ export default function DetailProject({ params }: DetailProjectProps) {
         <CardTitle className="flex justify-between">
           <span className="uppercase">{project?.title}</span>
           <div className="flex gap-5">
-            <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger className="self-end">
-                <Button variant="neutral">Edit</Button>
-              </SheetTrigger>
-              <SheetContent side="bottom" className="h-auto">
-                <SheetHeader>
-                  <SheetTitle>Edit Project {project?.title}</SheetTitle>
-                  <SheetDescription>
-                    Bring Your Ideas to Life: Start Your Project Today!
-                  </SheetDescription>
-                </SheetHeader>
-                <EditProjectForm
-                  setOpen={setOpen}
-                  idProject={project?.id || ""}
-                  value={{
-                    title: project?.title,
-                    description: project?.description,
-                    key: project?.key,
-                  }}
-                />
-              </SheetContent>
-            </Sheet>
-            <AlertDialog>
-              <AlertDialogTrigger>
-                <Button variant="neutral">Delete</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will delete your project
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={onDelete}>
-                    Continue
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            {isAuthor && (
+              <Sheet open={open} onOpenChange={setOpen}>
+                <SheetTrigger className="self-end">
+                  <Button variant="neutral">Edit</Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="h-auto">
+                  <SheetHeader>
+                    <SheetTitle>Edit Project {project?.title}</SheetTitle>
+                    <SheetDescription>
+                      Bring Your Ideas to Life: Start Your Project Today!
+                    </SheetDescription>
+                  </SheetHeader>
+                  <EditProjectForm
+                    setOpen={setOpen}
+                    idProject={project?.id || ""}
+                    value={{
+                      title: project?.title,
+                      description: project?.description,
+                      key: project?.key,
+                    }}
+                  />
+                </SheetContent>
+              </Sheet>
+            )}
+            {isAuthor && (
+              <AlertDialog>
+                <AlertDialogTrigger>
+                  <Button variant="neutral">Delete</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will delete your
+                      project
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={onDelete}>
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         </CardTitle>
         <CardDescription>
