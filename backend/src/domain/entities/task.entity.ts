@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Project } from './project.entity';
+import { Comment } from './comment.entity';
 
 @Entity('tasks')
 export class Task {
@@ -46,4 +48,7 @@ export class Task {
 
   @ManyToOne(() => User, (user) => user.assignedTask)
   assignees: User;
+
+  @OneToMany(() => Task, (task) => task.project)
+  comments: Comment[];
 }

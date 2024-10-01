@@ -7,10 +7,11 @@ import { AuthModule } from './presentation/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { TaskModule } from './presentation/task/task.module';
-import {FirebaseAdminModule} from './firebase-admin.module';
+import { FirebaseAdminModule } from './firebase-admin.module';
 import { Project } from './domain/entities/project.entity';
 import { ProjectModule } from './presentation/project/project.module';
 import { UserModule } from './presentation/user/user.module';
+import { CommentModule } from './presentation/comment/comment.module';
 
 @Module({
   imports: [
@@ -53,7 +54,8 @@ import { UserModule } from './presentation/user/user.module';
     AuthModule,
     ProjectModule,
     TaskModule,
-    UserModule
+    UserModule,
+    CommentModule,
   ],
 })
 export class AppModule {}
