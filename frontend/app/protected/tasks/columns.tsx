@@ -16,6 +16,7 @@ import Link from "next/link";
 import { User } from "@/services/dto/user";
 import { tasksService } from "@/services/tasks/tasks-service";
 import { toast } from "@/components/ui/use-toast";
+import { useLoadingStore } from "@/store/loading-store";
 
 export type Task = {
   id: string;
@@ -31,6 +32,7 @@ export type Task = {
 };
 
 export function columns(user: User | null): ColumnDef<Task>[] {
+  const { showLoading, hideLoading } = useLoadingStore();
   return [
     {
       accessorKey: "project.title",
@@ -39,6 +41,7 @@ export function columns(user: User | null): ColumnDef<Task>[] {
           <Button
             className="border-none"
             variant="noShadow"
+            showLoading={false}
             onClick={() =>
               column.toggleSorting(column.getIsSorted() === "asc", true)
             }
@@ -61,12 +64,31 @@ export function columns(user: User | null): ColumnDef<Task>[] {
       },
     },
     {
+      accessorKey: "label",
+      header: ({ column }) => {
+        return (
+          <Button
+            className="border-none"
+            variant="noShadow"
+            showLoading={false}
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc", true)
+            }
+          >
+            Label
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
       accessorKey: "title",
       header: ({ column }) => {
         return (
           <Button
             className="border-none"
             variant="noShadow"
+            showLoading={false}
             onClick={() =>
               column.toggleSorting(column.getIsSorted() === "asc", true)
             }
@@ -77,18 +99,11 @@ export function columns(user: User | null): ColumnDef<Task>[] {
         );
       },
       cell: ({ row }) => {
-        const label = labels.find(
-          (label) => label.value === row.original.label
-        );
-
         return (
           <Link href={`/protected/tasks/${row.original.id}`}>
-            <div className="flex space-x-2">
-              {label && <Badge variant="neutral">{label.label}</Badge>}
-              <span className="max-w-[500px] truncate font-medium underline text-blue-500 hover:no-underline hover:text-black">
-                {row.getValue("title")}
-              </span>
-            </div>
+            <span className="max-w-[500px] truncate font-medium underline text-blue-500 hover:no-underline hover:text-black">
+              {row.getValue("title")}
+            </span>
           </Link>
         );
       },
@@ -100,6 +115,7 @@ export function columns(user: User | null): ColumnDef<Task>[] {
           <Button
             className="border-none"
             variant="noShadow"
+            showLoading={false}
             onClick={() =>
               column.toggleSorting(column.getIsSorted() === "asc", true)
             }
@@ -109,27 +125,6 @@ export function columns(user: User | null): ColumnDef<Task>[] {
           </Button>
         );
       },
-      cell: ({ row }) => {
-        const priority = priorities.find(
-          (priority) => priority.value === row.getValue("priority")
-        );
-
-        if (!priority) {
-          return null;
-        }
-
-        return (
-          <div className="flex items-center">
-            {priority.icon && (
-              <priority.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-            )}
-            <span>{priority.label}</span>
-          </div>
-        );
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id));
-      },
     },
     {
       accessorKey: "status",
@@ -138,6 +133,7 @@ export function columns(user: User | null): ColumnDef<Task>[] {
           <Button
             className="border-none"
             variant="noShadow"
+            showLoading={false}
             onClick={() =>
               column.toggleSorting(column.getIsSorted() === "asc", true)
             }
@@ -145,24 +141,6 @@ export function columns(user: User | null): ColumnDef<Task>[] {
             Status
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        );
-      },
-      cell: ({ row }) => {
-        const status = statuses.find(
-          (status) => status.value === row.getValue("status")
-        );
-
-        if (!status) {
-          return null;
-        }
-
-        return (
-          <div className="flex w-[100px] items-center">
-            {status.icon && (
-              <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-            )}
-            <span>{status.label}</span>
-          </div>
         );
       },
     },
@@ -173,6 +151,7 @@ export function columns(user: User | null): ColumnDef<Task>[] {
           <Button
             className="border-none"
             variant="noShadow"
+            showLoading={false}
             onClick={() =>
               column.toggleSorting(column.getIsSorted() === "asc", true)
             }
@@ -199,7 +178,7 @@ export function columns(user: User | null): ColumnDef<Task>[] {
           const requestData: AssignToMeRequest = {
             assignees: user?.id!,
           };
-
+          showLoading();
           try {
             const response = await tasksService.assignToMe(
               requestData,
@@ -224,6 +203,7 @@ export function columns(user: User | null): ColumnDef<Task>[] {
               description: error.message,
             });
           }
+          hideLoading();
         }
 
         return (
