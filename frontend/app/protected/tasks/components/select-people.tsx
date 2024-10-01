@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/components/ui/card";
 import {
   LabelTaskEnum,
   PriorityTaskEnum,
@@ -68,7 +69,7 @@ export default function SelectPeople({
   }
 
   return (
-    <div className="flex flex-col w-[380px] p-5">
+    <Card className="flex flex-col w-[380px]">
       {peoples.map((people: User) => {
         return (
           <div
@@ -76,13 +77,13 @@ export default function SelectPeople({
             onClick={() => {
               handleOnclick(people);
             }}
-            className="flex justify-between gap-10"
+            className="flex justify-between gap-10 hover:bg-mainAccent py-2 px-5"
           >
             <span>{people.username}</span>
             <span>{people.name}</span>
           </div>
         );
       })}
-    </div>
+    </Card>
   );
 }
