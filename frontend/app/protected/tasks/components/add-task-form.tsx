@@ -42,17 +42,6 @@ import { useAuthStore } from "@/store/auth-store";
 import { toast } from "@/components/ui/use-toast";
 import CustomEditor from "@/components/ui/editor";
 import { Task } from "../columns";
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/components/ui/command";
 import SelectPeople from "./select-people";
 import ClearAssignee from "./clear-assignee";
 import { useLoadingStore } from "@/store/loading-store";
