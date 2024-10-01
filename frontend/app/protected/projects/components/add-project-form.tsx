@@ -57,7 +57,7 @@ export default function AddProjectForm({
       userId: user?.id!,
     };
     try {
-      showLoading()
+      showLoading();
       const response = await projectsService.createProject(requestData);
       if (response.status === 201) {
         toast({
@@ -66,7 +66,10 @@ export default function AddProjectForm({
         });
         setOpen(false);
         setProjects((prevState: ProjectDTO[]) => {
-          return [...prevState, response.data];
+          return [...prevState, response.data].sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
         });
       } else {
         toast({
@@ -82,7 +85,7 @@ export default function AddProjectForm({
         description: error.message,
       });
     }
-    hideLoading()
+    hideLoading();
   }
 
   return (
@@ -130,7 +133,9 @@ export default function AddProjectForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full lg:w-[200px]">Submit</Button>
+        <Button type="submit" className="w-full lg:w-[200px]">
+          Submit
+        </Button>
       </form>
     </Form>
   );
