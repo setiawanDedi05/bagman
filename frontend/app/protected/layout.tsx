@@ -16,6 +16,7 @@ import { LayoutDashboard, LucidePaperclip, ProjectorIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { ProgressLoader } from "nextjs-progressloader";
+import { useWebsocket } from "@/store/ws-store";
 
 const defaultLayout = [20, 32, 48];
 
@@ -25,6 +26,7 @@ export default function ProtectedPage({
   children: React.ReactNode;
 }>) {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const { init } = useWebsocket();
   const pathname = usePathname().split("/")[2];
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -40,6 +42,7 @@ export default function ProtectedPage({
         });
       }
     }
+    init();
   }, []);
   return (
     <Suspense fallback={<div>Loading...</div>}>
