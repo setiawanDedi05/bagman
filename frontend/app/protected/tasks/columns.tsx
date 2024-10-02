@@ -17,6 +17,8 @@ import { User } from "@/services/dto/user";
 import { tasksService } from "@/services/tasks/tasks-service";
 import { toast } from "@/components/ui/use-toast";
 import { useLoadingStore } from "@/store/loading-store";
+import { useWebsocket } from "@/store/ws-store";
+import { Socket } from "socket.io-client";
 
 export type Task = {
   id: string;
@@ -31,7 +33,11 @@ export type Task = {
   updatedAt: string;
 };
 
-export function columns(user: User | null): ColumnDef<Task>[] {
+export function columns(
+  user: User | null,
+  socket: Socket | null
+): ColumnDef<Task>[] {
+  console.log({ socket });
   const { showLoading, hideLoading } = useLoadingStore();
   return [
     {
@@ -180,22 +186,29 @@ export function columns(user: User | null): ColumnDef<Task>[] {
           };
           showLoading();
           try {
-            const response = await tasksService.assignToMe(
-              requestData,
-              task.id
-            );
-            if (response.status === 200) {
-              toast({
-                title: "The Task Assign To You",
-                description: "Keep on track",
-              });
-            } else {
-              toast({
-                variant: "destructive",
-                title: "The Task Not Assign To You",
-                description: "You can try later",
-              });
-            }
+            const request = {
+              id: task.id,
+              ...requestData,
+            };
+            console.log({ socket, request });
+            await socket?.emit("assignTask", request);
+            // const response = await tasksService.assignToMe(
+            //   requestData,
+            //   task.id
+            // );
+            // console.log({ res, response });
+            // if (response.status === 200) {
+            //   toast({
+            //     title: "The Task Assign To You",
+            //     description: "Keep on track",
+            //   });
+            // } else {
+            //   toast({
+            //     variant: "destructive",
+            //     title: "The Task Not Assign To You",
+            //     description: "You can try later",
+            //   });
+            // }
           } catch (error: any) {
             toast({
               variant: "destructive",

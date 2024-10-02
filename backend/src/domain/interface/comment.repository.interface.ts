@@ -1,5 +1,6 @@
-import { Comment } from "../entities/comment.entity";
+import { Comment } from '../entities/comment.entity';
 
 export interface ICommentsRepository {
-  create(): Promise<Comment>;
+  create(comment: Partial<Comment>): Promise<Comment>;
+  findCommentsByTaskId(taskId: string): Promise<Comment[]>;
 }

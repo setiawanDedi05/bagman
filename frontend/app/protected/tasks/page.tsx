@@ -38,6 +38,7 @@ export default function TasksPage() {
   useEffect(() => {
     fetchData();
     socket?.on("taskAssigned", (task) => {
+      console.log({ task });
       setTasks((prevTasks) => {
         const taskIndex = prevTasks.findIndex((t) => t.id === task.id);
         if (taskIndex !== -1) {
@@ -53,7 +54,7 @@ export default function TasksPage() {
   return (
     <div className="container mx-auto py-10">
       <DataTable
-        columns={columns(user)}
+        columns={columns(user, socket)}
         data={tasks}
         total={totalTasks}
         setTasks={setTasks}

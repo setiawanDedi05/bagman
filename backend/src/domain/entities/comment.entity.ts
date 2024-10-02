@@ -29,7 +29,7 @@ export class Comment {
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @ManyToOne(() => Task, (task) => task.comments)
+  @ManyToOne(() => Task, (task) => task.id)
   task: Task;
 
   @ManyToOne(() => User, (user) => user.id)

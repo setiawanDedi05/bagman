@@ -8,7 +8,13 @@ export class CommentRepository implements ICommentsRepository {
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
   ) {}
-  async create(): Promise<Comment> {
-    return await this.commentRepository.findOne({ where: { id: "1" } });
+  
+  async create(comment: Partial<Comment>): Promise<Comment> {
+    const newComment = await this.commentRepository.create(comment);
+    return await this.commentRepository.save(newComment);;
+  }
+
+  async findCommentsByTaskId(taskId: string): Promise<Comment[]> {
+    return await this.commentRepository.find({ where: { taskId } });
   }
 }

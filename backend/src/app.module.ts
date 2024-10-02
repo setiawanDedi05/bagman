@@ -12,6 +12,7 @@ import { Project } from './domain/entities/project.entity';
 import { ProjectModule } from './presentation/project/project.module';
 import { UserModule } from './presentation/user/user.module';
 import { CommentModule } from './presentation/comment/comment.module';
+import { Comment } from './domain/entities/comment.entity';
 
 @Module({
   imports: [
@@ -47,7 +48,7 @@ import { CommentModule } from './presentation/comment/comment.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Task, Project],
+      entities: [User, Task, Project, Comment],
       synchronize: true,
     }),
     FirebaseAdminModule,

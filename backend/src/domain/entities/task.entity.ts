@@ -49,6 +49,6 @@ export class Task {
   @ManyToOne(() => User, (user) => user.assignedTask)
   assignees: User;
 
-  @OneToMany(() => Task, (task) => task.project)
+  @OneToMany(() => Comment, (comment) => comment.task)
   comments: Comment[];
 }

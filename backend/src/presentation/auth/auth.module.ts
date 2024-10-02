@@ -9,8 +9,6 @@ import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from 'src/infrastructure/repositories/user.repository';
 import { EmailService } from 'src/application/services/email.service';
-import { ClientsModule } from '@nestjs/microservices';
-import { RabbitMQConfig } from 'src/config/rabbitmq.config';
 
 @Module({
   imports: [
@@ -24,12 +22,6 @@ import { RabbitMQConfig } from 'src/config/rabbitmq.config';
       }),
       inject: [ConfigService],
     }),
-    ClientsModule.registerAsync([
-      {
-        name: 'QUEUE_SERVICE',
-        useClass: RabbitMQConfig
-      }
-    ]),
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [AuthController],
