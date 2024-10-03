@@ -26,7 +26,7 @@ export default function ProtectedPage({
   children: React.ReactNode;
 }>) {
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const { init } = useWebsocket();
+  const { init, socket } = useWebsocket();
   const pathname = usePathname().split("/")[2];
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -43,6 +43,9 @@ export default function ProtectedPage({
       }
     }
     init();
+    return () => {
+      socket?.close(); // Menutup koneksi socket
+    };
   }, []);
   return (
     <Suspense fallback={<div>Loading...</div>}>

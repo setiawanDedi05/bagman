@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/sheet";
 import { tasksService } from "@/services/tasks/tasks-service";
 import { Badge } from "@/components/ui/badge";
-import { mapperLabelBadge, mapperPriorityBadge } from "@/lib/utils";
+import { MapperLabel, MapperPriority, MapperStatus } from "@/lib/utils";
 import Feedback from "./components/feedback";
 import EditTaskForm from "../components/edit-task-form";
 import { Task } from "../columns";
@@ -122,6 +122,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
       showLoading();
       try {
         await tasksService.changeStatus({ status }, id);
+        fetchData();
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -131,7 +132,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
       }
       hideLoading();
     },
-    [id, showLoading, hideLoading]
+    [id, showLoading, hideLoading, fetchData]
   );
 
   return (
@@ -159,7 +160,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
               <div className="flex flex-col">
                 <span className="uppercase mb-2">{task?.title}</span>
                 <div className="flex gap-2">
-                  <Badge variant="neutral">
+                  <Badge variant={MapperStatus(task.status)}>
                     <span className="capitalize">{task?.status}</span>
                   </Badge>
                 </div>
@@ -249,13 +250,13 @@ export default function DetailTask({ params }: DetailTaskProps) {
                   <div className="w-[20%] flex flex-col gap-5">
                     <div className="flex justify-between">
                       <span>Type</span>
-                      <Badge variant={mapperLabelBadge(task?.label)}>
+                      <Badge variant={MapperLabel(task?.label)}>
                         <span className="capitalize">{task?.label}</span>
                       </Badge>
                     </div>
                     <div className="flex justify-between">
                       <span>Priority</span>
-                      <Badge variant={mapperPriorityBadge(task?.priority)}>
+                      <Badge variant={MapperPriority(task?.priority)}>
                         <span className="capitalize">{task?.priority}</span>
                       </Badge>
                     </div>
@@ -311,7 +312,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
               <AccordionItem value="item-1">
                 <AccordionTrigger>Activity</AccordionTrigger>
                 <AccordionContent>
-                  <Feedback />
+                  <Feedback comments={task.comments} taskId={task.id} />
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

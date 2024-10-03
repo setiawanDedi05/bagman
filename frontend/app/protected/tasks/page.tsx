@@ -9,10 +9,11 @@ import { useAuthStore } from "@/store/auth-store";
 import { useLoadingStore } from "@/store/loading-store";
 import { toast } from "@/components/ui/use-toast";
 import { useWebsocket } from "@/store/ws-store";
+import { AssignToMeRequest } from "@/services/dto/task-dto";
 
 export default function TasksPage() {
   const { user } = useAuthStore();
-  const { showLoading, hideLoading } = useLoadingStore();
+  const { showLoading, hideLoading, loading } = useLoadingStore();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [totalTasks, setTotalTasks] = useState<number>(0);
   const { socket } = useWebsocket();
@@ -35,10 +36,31 @@ export default function TasksPage() {
     hideLoading();
   }, [hideLoading, showLoading, page]);
 
+  async function assignToMe(task: Task) {
+    const requestData: AssignToMeRequest = {
+      assignees: user?.id!,
+    };
+    showLoading();
+    try {
+      const request = {
+        id: task.id,
+        ...requestData,
+      };
+
+      await socket?.emit("assignTask", request);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "The Task Not Assign To You",
+        description: error.message,
+      });
+    }
+    hideLoading();
+  }
+
   useEffect(() => {
     fetchData();
     socket?.on("taskAssigned", (task) => {
-      console.log({ task });
       setTasks((prevTasks) => {
         const taskIndex = prevTasks.findIndex((t) => t.id === task.id);
         if (taskIndex !== -1) {
@@ -54,7 +76,7 @@ export default function TasksPage() {
   return (
     <div className="container mx-auto py-10">
       <DataTable
-        columns={columns(user, socket)}
+        columns={columns(assignToMe)}
         data={tasks}
         total={totalTasks}
         setTasks={setTasks}

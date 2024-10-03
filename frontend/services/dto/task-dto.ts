@@ -1,3 +1,4 @@
+import { CommentDTO } from "./comment-dto";
 import { User } from "./user";
 
 export interface Task {
@@ -11,6 +12,7 @@ export interface Task {
   updatedAt: string;
   createdBy: User;
   assignees: User;
+  comments: CommentDTO;
 }
 
 export enum StatusTaskEnum {
@@ -53,6 +55,6 @@ export interface AssignToMeRequest {
   assignees: string;
 }
 
-export interface ChangeStatusRequest{
-    status: string
+export interface ChangeStatusRequest {
+  status: string;
 }

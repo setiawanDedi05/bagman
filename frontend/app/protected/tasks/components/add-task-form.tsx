@@ -12,13 +12,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { any, z } from "zod";
+import { z } from "zod";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -45,6 +43,7 @@ import { Task } from "../columns";
 import SelectPeople from "./select-people";
 import ClearAssignee from "./clear-assignee";
 import { useLoadingStore } from "@/store/loading-store";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -73,6 +72,7 @@ export default function AddTaskForm({
   const { showLoading, hideLoading } = useLoadingStore();
   const [projects, setProjects] = useState<ProjectDTO[]>([]);
   const [search, setSearch] = useState<string>("");
+  const { push } = useRouter();
   const fetchData = useCallback(async () => {
     showLoading();
     try {
@@ -88,7 +88,7 @@ export default function AddTaskForm({
         description: error.message,
       });
     }
-    hideLoading()
+    hideLoading();
   }, [setProjects, setTotal, showLoading, hideLoading]);
 
   useEffect(() => {
@@ -128,6 +128,7 @@ export default function AddTaskForm({
         setTasks((prevState: Task[]) => {
           return [response.data, ...prevState];
         });
+        push("/protected/tasks");
       } else {
         toast({
           variant: "destructive",
