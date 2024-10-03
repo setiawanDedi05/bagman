@@ -71,7 +71,7 @@ export default function TasksPage() {
         return [...prevTasks, task];
       });
     });
-  }, [fetchData, setTasks]);
+  }, [fetchData, setTasks, socket]);
 
   return (
     <div className="container mx-auto py-10">

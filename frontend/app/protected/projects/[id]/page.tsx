@@ -70,7 +70,7 @@ export default function DetailProject({ params }: DetailProjectProps) {
       });
     }
     hideLoading();
-  }, [id, showLoading, hideLoading]);
+  }, [id, showLoading, hideLoading, user?.id]);
 
   useEffect(() => {
     fetchData();

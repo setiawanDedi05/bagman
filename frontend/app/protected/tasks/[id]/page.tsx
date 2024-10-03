@@ -84,7 +84,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
       throw error;
     }
     hideLoading();
-  }, [id, showLoading, hideLoading]);
+  }, [id, showLoading, hideLoading, user?.id]);
 
   useEffect(() => {
     fetchData();

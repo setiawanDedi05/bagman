@@ -31,7 +31,7 @@ export default function Comment({ comments }: CommentType) {
         return prevState;
       });
     });
-  }, [setCommentState]);
+  }, [setCommentState, socket]);
 
   return (
     <>

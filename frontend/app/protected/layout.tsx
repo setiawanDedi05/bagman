@@ -46,7 +46,7 @@ export default function ProtectedPage({
     return () => {
       socket?.close(); // Menutup koneksi socket
     };
-  }, []);
+  }, [init, socket]);
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <section className="w-full">
