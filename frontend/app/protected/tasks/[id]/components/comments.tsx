@@ -1,31 +1,64 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import { CommentDTO } from "@/services/dto/comment-dto";
+import { useWebsocket } from "@/store/ws-store";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { useEffect, useState } from "react";
 
-export default function Comment() {
+interface CommentType {
+  comments: Array<CommentDTO>;
+}
+
+export default function Comment({ comments }: CommentType) {
+  const { socket } = useWebsocket();
+  const [commentState, setCommentState] = useState<Array<CommentDTO>>(
+    comments.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+  );
+
+  useEffect(() => {
+    socket?.on("commentCreated", (comment) => {
+      setCommentState((prevState) => {
+        const commentIndex = prevState.find((t) => t.id === comment.id);
+        if (!commentIndex) {
+          return [...prevState, comment].sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        }
+        return prevState;
+      });
+    });
+  }, [setCommentState, socket]);
+
   return (
-    <Card className="py-5 px-2">
-      <CardContent>
-        <div className="flex gap-5 items-center">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback>SD</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col">
-            <span>Setiawan Dedi</span>
-            <span className="text-xs text-mute">
-              {formatDistanceToNow(new Date(new Date().toLocaleString()), {
-                addSuffix: true,
-              })}
-            </span>
-          </div>
-        </div>
-        <p className="mt-5">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-          facere dicta minus, quas ullam molestias. Doloremque quae minus
-          quaerat nostrum eum, maxime ea illo neque officia accusamus magni rem
-          nisi!
-        </p>
-      </CardContent>
-    </Card>
+    <>
+      {commentState.map((comment) => {
+        return (
+          <Card key={comment.id} className="py-5 px-2 my-2">
+            <CardContent>
+              <div className="flex gap-5 items-center">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback>
+                    {comment.user.username.slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <span>{comment.user.username}</span>
+                  <span className="text-xs text-mute">
+                    {formatDistanceToNow(new Date(comment.createdAt), {
+                      addSuffix: true,
+                    })}
+                  </span>
+                </div>
+              </div>
+              <p className="mt-5">{comment.content}</p>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </>
   );
 }

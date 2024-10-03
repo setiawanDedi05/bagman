@@ -4,7 +4,7 @@ import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 
 export default function Activity() {
   return (
-    <Card className="border-none">
+    <Card className="py-5 px-2 my-2">
       <CardContent>
         <div className="flex items-center justify-between">
           <div className="flex gap-5 items-center">

@@ -41,17 +41,19 @@ export class TaskService {
       };
       const response = await this.taskRepository.createTask(task);
       if (response && assignees) {
-        await this.emailService.sendEmailToAssignees(
-          assignees.email,
-          assignees.name,
-          task.title,
-          project.owner.name,
-        );
-        await this.notificationService.sendPushNotification(
-          assignees.fcmToken,
-          'New Task Assign to you',
-          `I would like to inform you that a new task titled ${task.title} has been assigned to you by ${project.owner.name || project.owner.username}.`,
-        );
+        await Promise.all([
+          this.emailService.sendEmailToAssignees(
+            assignees.email,
+            assignees.name,
+            task.title,
+            project.owner.name,
+          ),
+          this.notificationService.sendPushNotification(
+            assignees.fcmToken,
+            'New Task Assign to you',
+            `a new task titled ${task.title} has been assigned to you by ${project.owner.name || project.owner.username}.`,
+          ),
+        ]);
       }
       return response;
     } catch (error) {
@@ -110,17 +112,19 @@ export class TaskService {
       };
       const response = await this.taskRepository.updateTask(id, task);
       if (response && assignees) {
-        await this.emailService.sendEmailToAssignees(
-          assignees.email,
-          assignees.name,
-          task.title,
-          project.owner.name,
-        );
-        await this.notificationService.sendPushNotification(
-          assignees.fcmToken,
-          'New Task Assign to you',
-          `Task ${task.title} in your project has been assigned to ${project.owner.name}.`,
-        );
+        await Promise.all([
+          this.emailService.sendEmailToAssignees(
+            assignees.email,
+            assignees.name,
+            task.title,
+            project.owner.name,
+          ),
+          this.notificationService.sendPushNotification(
+            assignees.fcmToken,
+            'New Task Assign to you',
+            `Task ${task.title} in your project has been assigned to ${project.owner.name}.`,
+          ),
+        ]);
       }
 
       return response;
@@ -137,28 +141,28 @@ export class TaskService {
     return this.taskRepository.countTasksThisMonth(id);
   }
 
-  async assignToMe(id: string, updateTaskDto: UpdateTaskDto) {
+  async assignToMe(id: string, assigneesId: string) {
     try {
       const findedTask = await this.findOne(id);
-      const assignees = await this.userRepository.findById(
-        updateTaskDto.assignees,
-      );
+      const assignees = await this.userRepository.findById(assigneesId);
       const task = {
         assignees,
       };
       const response = await this.taskRepository.updateTask(id, task);
       if (response && assignees) {
-        await this.emailService.sendEmailToOwner(
-          findedTask.createdBy.email,
-          findedTask.createdBy.name,
-          findedTask.title,
-          assignees.name,
-        );
-        await this.notificationService.sendPushNotification(
-          findedTask.createdBy.fcmToken,
-          'Task Update',
-          `Task ${findedTask.title} in your project has been assigned to ${assignees.name}.`,
-        );
+        await Promise.all([
+          this.emailService.sendEmailToOwner(
+            findedTask.createdBy.email,
+            findedTask.createdBy.name,
+            findedTask.title,
+            assignees.name,
+          ),
+          this.notificationService.sendPushNotification(
+            findedTask.createdBy.fcmToken,
+            'Task Update',
+            `Task ${findedTask.title} in your project has been assigned to ${assignees.name}.`,
+          ),
+        ]);
       }
 
       return response;
@@ -175,17 +179,19 @@ export class TaskService {
       };
       const response = await this.taskRepository.updateTask(id, task);
       if (response) {
-        await this.emailService.sendEmailUpdateStatus(
-          findedTask.createdBy.email,
-          findedTask.createdBy.name,
-          findedTask.title,
-          task.status,
-        );
-        await this.notificationService.sendPushNotification(
-          findedTask.createdBy.fcmToken,
-          'Task Update',
-          `Task ${findedTask.title} in your project has been updated the status to ${task.status}.`,
-        );
+        await Promise.all([
+          this.emailService.sendEmailUpdateStatus(
+            findedTask.createdBy.email,
+            findedTask.createdBy.name,
+            findedTask.title,
+            task.status,
+          ),
+          this.notificationService.sendPushNotification(
+            findedTask.createdBy.fcmToken,
+            'Task Update',
+            `Task ${findedTask.title} in your project has been updated the status to ${task.status}.`,
+          ),
+        ]);
       }
 
       return response;

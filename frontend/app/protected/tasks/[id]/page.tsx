@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/sheet";
 import { tasksService } from "@/services/tasks/tasks-service";
 import { Badge } from "@/components/ui/badge";
-import { mapperLabelBadge, mapperPriorityBadge } from "@/lib/utils";
+import { MapperLabel, MapperPriority, MapperStatus } from "@/lib/utils";
 import Feedback from "./components/feedback";
 import EditTaskForm from "../components/edit-task-form";
 import { Task } from "../columns";
@@ -54,6 +54,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { StatusTaskEnum } from "@/services/dto/task-dto";
 import { useLoadingStore } from "@/store/loading-store";
+import { useAuthStore } from "@/store/auth-store";
 
 interface DetailTaskProps {
   params: {
@@ -63,6 +64,9 @@ interface DetailTaskProps {
 export default function DetailTask({ params }: DetailTaskProps) {
   const { id } = params;
   const { showLoading, hideLoading } = useLoadingStore();
+  const { user } = useAuthStore();
+  const [isAuthor, setIsAuthor] = useState<boolean>(false);
+  const [isAssignee, setIsAssignee] = useState<boolean>(false);
   const [task, setTask] = useState<Task>();
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -72,11 +76,15 @@ export default function DetailTask({ params }: DetailTaskProps) {
     try {
       const response = await tasksService.detailTask(id);
       setTask(response.data);
+      setIsAssignee(
+        response.data.assignees && response.data.assignees.id === user?.id
+      );
+      setIsAuthor(response.data.project.owner.id === user?.id);
     } catch (error) {
       throw error;
     }
     hideLoading();
-  }, [id, showLoading, hideLoading]);
+  }, [id, showLoading, hideLoading, user?.id]);
 
   useEffect(() => {
     fetchData();
@@ -114,6 +122,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
       showLoading();
       try {
         await tasksService.changeStatus({ status }, id);
+        fetchData();
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -123,7 +132,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
       }
       hideLoading();
     },
-    [id, showLoading, hideLoading]
+    [id, showLoading, hideLoading, fetchData]
   );
 
   return (
@@ -151,13 +160,13 @@ export default function DetailTask({ params }: DetailTaskProps) {
               <div className="flex flex-col">
                 <span className="uppercase mb-2">{task?.title}</span>
                 <div className="flex gap-2">
-                  <Badge variant="neutral">
+                  <Badge variant={MapperStatus(task.status)}>
                     <span className="capitalize">{task?.status}</span>
                   </Badge>
                 </div>
               </div>
               <div className="flex gap-5">
-                {task.status === StatusTaskEnum.BACKLOG && (
+                {task.status === StatusTaskEnum.BACKLOG && isAssignee && (
                   <Button
                     variant="neutral"
                     onClick={() =>
@@ -167,7 +176,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
                     On Progress
                   </Button>
                 )}
-                {task.status === StatusTaskEnum.ONPROGRESS && (
+                {task.status === StatusTaskEnum.ONPROGRESS && isAssignee && (
                   <Button
                     variant="neutral"
                     onClick={() => handleChangeStatus(StatusTaskEnum.DONE)}
@@ -175,48 +184,53 @@ export default function DetailTask({ params }: DetailTaskProps) {
                     Done
                   </Button>
                 )}
-                <Sheet open={open} onOpenChange={setOpen}>
-                  <SheetTrigger className="self-end">
-                    <Button variant="neutral">Edit</Button>
-                  </SheetTrigger>
-                  <SheetContent
-                    side="bottom"
-                    className="h-[70%] overflow-scroll"
-                  >
-                    <SheetHeader>
-                      <SheetTitle>Edit Task {task?.title}</SheetTitle>
-                      <SheetDescription>
-                        Bring Your Ideas to Life: Start Your Task Today!
-                      </SheetDescription>
-                    </SheetHeader>
-                    <EditTaskForm
-                      setTask={setTask}
-                      setOpen={setOpen}
-                      task={task}
-                    />
-                  </SheetContent>
-                </Sheet>
-                <AlertDialog>
-                  <AlertDialogTrigger>
-                    <Button variant="neutral">Delete</Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will delete your Task
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={onDelete}>
-                        Continue
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                {isAuthor && (
+                  <Sheet open={open} onOpenChange={setOpen}>
+                    <SheetTrigger className="self-end">
+                      <Button variant="neutral">Edit</Button>
+                    </SheetTrigger>
+                    <SheetContent
+                      side="bottom"
+                      className="h-[70%] overflow-scroll"
+                    >
+                      <SheetHeader>
+                        <SheetTitle>Edit Task {task?.title}</SheetTitle>
+                        <SheetDescription>
+                          Bring Your Ideas to Life: Start Your Task Today!
+                        </SheetDescription>
+                      </SheetHeader>
+                      <EditTaskForm
+                        setTask={setTask}
+                        setOpen={setOpen}
+                        task={task}
+                      />
+                    </SheetContent>
+                  </Sheet>
+                )}
+                {isAuthor && (
+                  <AlertDialog>
+                    <AlertDialogTrigger>
+                      <Button variant="neutral">Delete</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will delete your
+                          Task
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={onDelete}>
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </div>
             </CardTitle>
             <CardDescription>
@@ -236,13 +250,13 @@ export default function DetailTask({ params }: DetailTaskProps) {
                   <div className="w-[20%] flex flex-col gap-5">
                     <div className="flex justify-between">
                       <span>Type</span>
-                      <Badge variant={mapperLabelBadge(task?.label)}>
+                      <Badge variant={MapperLabel(task?.label)}>
                         <span className="capitalize">{task?.label}</span>
                       </Badge>
                     </div>
                     <div className="flex justify-between">
                       <span>Priority</span>
-                      <Badge variant={mapperPriorityBadge(task?.priority)}>
+                      <Badge variant={MapperPriority(task?.priority)}>
                         <span className="capitalize">{task?.priority}</span>
                       </Badge>
                     </div>
@@ -298,7 +312,7 @@ export default function DetailTask({ params }: DetailTaskProps) {
               <AccordionItem value="item-1">
                 <AccordionTrigger>Activity</AccordionTrigger>
                 <AccordionContent>
-                  <Feedback />
+                  <Feedback comments={task.comments} taskId={task.id} />
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

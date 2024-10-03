@@ -13,7 +13,13 @@ import { EmailService } from 'src/application/services/email.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Task, Project]), AuthModule],
   controllers: [TaskController],
-  providers: [TaskService, EmailService , TaskRepository, NotificationService, ProjectRepository],
+  providers: [
+    TaskService,
+    EmailService,
+    TaskRepository,
+    NotificationService,
+    ProjectRepository,
+  ],
   exports: [TaskService],
 })
 export class TaskModule {}

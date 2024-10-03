@@ -7,10 +7,13 @@ import { AuthModule } from './presentation/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { TaskModule } from './presentation/task/task.module';
-import {FirebaseAdminModule} from './firebase-admin.module';
+import { FirebaseAdminModule } from './firebase-admin.module';
 import { Project } from './domain/entities/project.entity';
 import { ProjectModule } from './presentation/project/project.module';
 import { UserModule } from './presentation/user/user.module';
+import { CommentModule } from './presentation/comment/comment.module';
+import { Comment } from './domain/entities/comment.entity';
+import { WebsocketModule } from './infrastructure/websocket/ws.module';
 
 @Module({
   imports: [
@@ -46,14 +49,16 @@ import { UserModule } from './presentation/user/user.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Task, Project],
+      entities: [User, Task, Project, Comment],
       synchronize: true,
     }),
     FirebaseAdminModule,
     AuthModule,
     ProjectModule,
     TaskModule,
-    UserModule
+    UserModule,
+    CommentModule,
+    WebsocketModule
   ],
 })
 export class AppModule {}

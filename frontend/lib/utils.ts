@@ -1,4 +1,9 @@
 import { fetchToken } from "@/firebase";
+import {
+  LabelTaskEnum,
+  PriorityTaskEnum,
+  StatusTaskEnum,
+} from "@/services/dto/task-dto";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -6,21 +11,36 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function mapperLabelBadge(label?: string) {
+export function MapperLabel(label: string) {
   switch (label) {
-    case "bug":
-      return "default";
+    case LabelTaskEnum.FEATURE:
+      return "primary";
+    case LabelTaskEnum.BUG:
+      return "danger";
     default:
-      return "neutral";
+      return "secondary";
   }
 }
 
-export function mapperPriorityBadge(priority?: string) {
+export function MapperPriority(priority: string) {
   switch (priority) {
-    case "high":
-      return "default";
+    case PriorityTaskEnum.LOW:
+      return "primary";
+    case PriorityTaskEnum.HIGH:
+      return "danger";
     default:
-      return "neutral";
+      return "secondary";
+  }
+}
+
+export function MapperStatus(status: string) {
+  switch (status) {
+    case StatusTaskEnum.ONPROGRESS:
+      return "primary";
+    case StatusTaskEnum.DONE:
+      return "danger";
+    default:
+      return "secondary";
   }
 }
 

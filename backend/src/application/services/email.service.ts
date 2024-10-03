@@ -1,6 +1,7 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { EventPattern } from '@nestjs/microservices';
 import { UserRepository } from 'src/infrastructure/repositories/user.repository';
 
 @Injectable()
@@ -10,6 +11,11 @@ export class EmailService {
     private readonly mailerService: MailerService,
     private readonly jwtService: JwtService,
   ) {}
+
+  @EventPattern('send_notification')
+  async handleNotification(payload: any) {
+    console.log('Receive notification event with payload:', payload);
+  }
 
   async sendVerificationEmail(email: string, token: string): Promise<void> {
     const verificationUrl = `${process.env.FRONTEND_URL}/auth/verify-email?token=${token}`;
