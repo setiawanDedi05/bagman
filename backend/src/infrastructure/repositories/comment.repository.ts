@@ -11,7 +11,7 @@ export class CommentRepository implements ICommentsRepository {
   
   async create(comment: Partial<Comment>): Promise<Comment> {
     const newComment = await this.commentRepository.create(comment);
-    return await this.commentRepository.save(newComment);;
+    return await this.commentRepository.save(newComment);
   }
 
   async findCommentsByTaskId(taskId: string): Promise<Comment[]> {

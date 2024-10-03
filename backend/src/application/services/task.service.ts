@@ -6,7 +6,6 @@ import { NotificationService } from './notification.service';
 import { UserRepository } from 'src/infrastructure/repositories/user.repository';
 import { ProjectRepository } from 'src/infrastructure/repositories/project.repository';
 import { EmailService } from './email.service';
-import { TasksGateway } from 'src/presentation/task/task.gateway';
 
 @Injectable()
 export class TaskService {
@@ -16,7 +15,6 @@ export class TaskService {
     private readonly emailService: EmailService,
     private readonly notificationService: NotificationService,
     private readonly projectRepository: ProjectRepository,
-    private readonly taskGateway: TasksGateway,
   ) {}
 
   async create(createTaskDto: CreateTaskDto) {
@@ -125,8 +123,8 @@ export class TaskService {
             assignees.fcmToken,
             'New Task Assign to you',
             `Task ${task.title} in your project has been assigned to ${project.owner.name}.`,
-          )
-        ])
+          ),
+        ]);
       }
 
       return response;
@@ -143,18 +141,15 @@ export class TaskService {
     return this.taskRepository.countTasksThisMonth(id);
   }
 
-  async assignToMe(id: string, updateTaskDto: UpdateTaskDto) {
+  async assignToMe(id: string, assigneesId: string) {
     try {
       const findedTask = await this.findOne(id);
-      const assignees = await this.userRepository.findById(
-        updateTaskDto.assignees,
-      );
+      const assignees = await this.userRepository.findById(assigneesId);
       const task = {
         assignees,
       };
       const response = await this.taskRepository.updateTask(id, task);
       if (response && assignees) {
-        this.taskGateway.server.emit('taskAssigned', response);
         await Promise.all([
           this.emailService.sendEmailToOwner(
             findedTask.createdBy.email,
@@ -195,8 +190,8 @@ export class TaskService {
             findedTask.createdBy.fcmToken,
             'Task Update',
             `Task ${findedTask.title} in your project has been updated the status to ${task.status}.`,
-          )
-        ])
+          ),
+        ]);
       }
 
       return response;

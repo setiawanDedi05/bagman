@@ -13,6 +13,7 @@ import { ProjectModule } from './presentation/project/project.module';
 import { UserModule } from './presentation/user/user.module';
 import { CommentModule } from './presentation/comment/comment.module';
 import { Comment } from './domain/entities/comment.entity';
+import { WebsocketModule } from './infrastructure/websocket/ws.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { Comment } from './domain/entities/comment.entity';
     TaskModule,
     UserModule,
     CommentModule,
+    WebsocketModule
   ],
 })
 export class AppModule {}

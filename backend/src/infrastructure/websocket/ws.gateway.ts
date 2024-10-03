@@ -25,14 +25,12 @@ export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   handleConnection(client: Socket) {
-    console.log('user join ' + client.id);
     this.server.emit('user-joined', {
       message: `user joined: ${client.id}`,
     });
   }
 
   handleDisconnect(client: Socket) {
-    console.log('user left ' + client.id);
     this.server.emit('user-left', {
       message: `user left: ${client.id}`,
     });
@@ -40,12 +38,10 @@ export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('assignTask')
   async handleAssignToMe(@MessageBody() payload: any) {
-    console.log({ payload });
     const response = await this.tasksService.assignToMe(
       payload.id,
-      payload.data,
+      payload.assignees,
     );
-    console.log({ response });
     if (response) {
       this.server.emit('taskAssigned', response);
     }

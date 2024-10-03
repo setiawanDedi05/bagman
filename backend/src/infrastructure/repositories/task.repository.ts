@@ -4,6 +4,9 @@ import { Task } from 'src/domain/entities/task.entity';
 import { ITaskRepository } from 'src/domain/interface/task.repository.interface';
 import { Between, Repository } from 'typeorm';
 
+const now = new Date();
+const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 export class TaskRepository implements ITaskRepository {
   constructor(
     @InjectRepository(Task)
@@ -36,7 +39,14 @@ export class TaskRepository implements ITaskRepository {
   async findTaskById(id: string): Promise<Task> {
     return await this.taskRepository.findOne({
       where: { id },
-      relations: ['project', 'project.owner', 'assignees', 'createdBy', 'comments'],
+      relations: [
+        'project',
+        'project.owner',
+        'assignees',
+        'createdBy',
+        'comments',
+        'comments.user'
+      ],
     });
   }
 
@@ -68,12 +78,17 @@ export class TaskRepository implements ITaskRepository {
   async recentTask(id: string): Promise<Task[]> {
     try {
       return await this.taskRepository.find({
-        where: { assignees: { id }, isDelete: false, status: 'done' },
+        where: {
+          assignees: { id },
+          isDelete: false,
+          status: 'done',
+          createdAt: Between(startOfMonth, endOfMonth),
+        },
         order: {
           createdAt: 'DESC',
         },
         take: 5,
-        relations: ['createdBy'],
+        relations: ['createdBy', 'assignees'],
       });
     } catch (error) {
       throw error;
@@ -81,15 +96,11 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async countTasksThisMonth(id: string): Promise<number> {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
     return this.taskRepository.count({
       where: {
         assignees: { id },
         isDelete: false,
-        status: "done",
+        status: 'done',
         createdAt: Between(startOfMonth, endOfMonth),
       },
     });

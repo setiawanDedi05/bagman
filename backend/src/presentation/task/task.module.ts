@@ -9,13 +9,9 @@ import { NotificationService } from 'src/application/services/notification.servi
 import { Project } from 'src/domain/entities/project.entity';
 import { ProjectRepository } from 'src/infrastructure/repositories/project.repository';
 import { EmailService } from 'src/application/services/email.service';
-import { TasksGateway } from './task.gateway';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Task, Project]),
-    AuthModule
-  ],
+  imports: [TypeOrmModule.forFeature([Task, Project]), AuthModule],
   controllers: [TaskController],
   providers: [
     TaskService,
@@ -23,7 +19,6 @@ import { TasksGateway } from './task.gateway';
     TaskRepository,
     NotificationService,
     ProjectRepository,
-    TasksGateway,
   ],
   exports: [TaskService],
 })

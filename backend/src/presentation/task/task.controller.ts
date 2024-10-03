@@ -59,11 +59,6 @@ export class TaskController {
     return this.taskService.update(id, updateTaskDto);
   }
 
-  @Patch('assign-to-me/:id')
-  assignToMe(@Param('id') id: string, @Body() UpdateTaskDto: UpdateTaskDto) {
-    return this.taskService.assignToMe(id, UpdateTaskDto);
-  }
-
   @Patch('change-status/:id')
   changeStatus(@Param('id') id: string, @Body() UpdateTaskDto: UpdateTaskDto) {
     return this.taskService.changeStatus(id, UpdateTaskDto);
