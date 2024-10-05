@@ -12,6 +12,7 @@
 6. [Contribution](#contribution)
 7. [License](#license)
 8. [Contact](#contact)
+9. [ScreenShoot](#example-screenshoot)
 
 ---
 ## Features
@@ -147,9 +148,3 @@ Linkedin: https://www.linkedin.com/in/dedi-setiawan-05/
 ![Screen shoot Laptop Task Page](./screenshoot/laptop-tasks.png "Task Page in Laptop Screen")
 
 ![Screen shoot Mobile Task Page](./screenshoot/mobile-detail-task.png "Task Page in Mobile Screen")
-
-
-
-
-
-
