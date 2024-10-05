@@ -5,12 +5,13 @@
 ## Table of Content
 
 1. [Feature](#features)
-2. [Installation](#installation)
-3. [Usage](#usage)
-4. [Configuration](#configuration)
-5. [Contribution](#contribution)
-6. [License](#license)
-7. [Contact](#contact)
+2. [Stack](#stack)
+3. [Installation](#installation)
+4. [Usage](#usage)
+5. [Configuration](#configuration)
+6. [Contribution](#contribution)
+7. [License](#license)
+8. [Contact](#contact)
 
 ---
 ## Features
@@ -20,6 +21,20 @@
 - **Verification email** verification active email.
 - **User authentication:** Secure login with JWT-based authentication and cookies http only.
 - **Simple, intuitive interface:** A dashboard that helps users quickly navigate through tasks and projects.
+
+---
+## Stack and Tech
+- Nest js
+- Next js
+- Web socket (Socket.io)
+- JWT
+- Cookie Secure Http only
+- Firebase Push Notification
+- Email Verification
+- Tailwind css
+- Shadcn-ui
+- Zustand
+
 
 ---
 ## Installation
