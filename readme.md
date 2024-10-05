@@ -5,7 +5,7 @@
 ## Table of Content
 
 1. [Feature](#features)
-2. [Stack](#stack)
+2. [Stack](#stack-and-tech)
 3. [Installation](#installation)
 4. [Usage](#usage)
 5. [Configuration](#configuration)
