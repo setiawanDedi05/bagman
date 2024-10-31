@@ -19,7 +19,7 @@ const HomePage = () => {
             you cut through the noise. With intuitive tools for organizing your
             tasks, you can focus on what truly matters and set yourself up for
             success. Achieve more every day by turning todays plans into
-            tomorrows accomplishments.
+            tomorrows accomplishments..
           </p>
         </div>
         <div className="flex mt-10 justify-center">
